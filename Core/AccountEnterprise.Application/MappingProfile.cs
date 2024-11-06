@@ -14,7 +14,7 @@ public class MappingProfile : Profile
 		CreateMap<DepartmentForUpdateDto, Department>();
 
 		CreateMap<Employee, EmployeeDto>()
-             .ForMember(x => x.Id, opt => opt.MapFrom(a => a.DepartmentId));
+             .ForMember(x => x.Id, opt => opt.MapFrom(a => a.EmployeeId));
         CreateMap<EmployeeForCreationDto, Employee>();
 		CreateMap<EmployeeForUpdateDto, Employee>();
 

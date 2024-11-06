@@ -6,27 +6,25 @@ using AccountEnterprise.Application.Requests.Commands;
 
 namespace AccountEnterprise.Web.Controllers;
 
-[Route("api/employees")]
-[ApiController]
-public class EmployeeController : ControllerBase
+public class EmployeesController : Controller
 {
     private readonly IMediator _mediator;
 
-    public EmployeeController(IMediator mediator)
+    public EmployeesController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Index()
     {
         var employees = await _mediator.Send(new GetEmployeesQuery());
 
-        return Ok(employees);
+        return View(employees);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Details(Guid id)
     {
         var employee = await _mediator.Send(new GetEmployeeByIdQuery(id));
 
@@ -35,7 +33,7 @@ public class EmployeeController : ControllerBase
             return NotFound($"Employee with id {id} is not found.");
         }
         
-        return Ok(employee);
+        return View(employee);
     }
 
     [HttpPost]
@@ -51,8 +49,8 @@ public class EmployeeController : ControllerBase
         return CreatedAtAction(nameof(Create), employee);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] EmployeeForUpdateDto? employee)
+    [HttpPut]
+    public async Task<IActionResult> Edit(Guid id, [FromBody] EmployeeForUpdateDto? employee)
     {
         if (employee is null)
         {
@@ -69,7 +67,7 @@ public class EmployeeController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete]
     public async Task<IActionResult> Delete(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteEmployeeCommand(id));
