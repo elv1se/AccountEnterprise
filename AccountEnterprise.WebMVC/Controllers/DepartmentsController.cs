@@ -6,27 +6,25 @@ using AccountEnterprise.Application.Requests.Commands;
 
 namespace AccountEnterprise.Web.Controllers;
 
-[Route("api/departments")]
-[ApiController]
-public class DepartmentController : ControllerBase
+public class DepartmentsController : Controller
 {
     private readonly IMediator _mediator;
 
-    public DepartmentController(IMediator mediator)
+    public DepartmentsController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Index()
     {
         var departments = await _mediator.Send(new GetDepartmentsQuery());
 
-        return Ok(departments);
+        return View(departments);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Details(Guid id)
     {
         var department = await _mediator.Send(new GetDepartmentByIdQuery(id));
 
@@ -35,7 +33,7 @@ public class DepartmentController : ControllerBase
             return NotFound($"Department with id {id} is not found.");
         }
         
-        return Ok(department);
+        return View(department);
     }
 
     [HttpPost]
@@ -51,8 +49,8 @@ public class DepartmentController : ControllerBase
         return CreatedAtAction(nameof(Create), department);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] DepartmentForUpdateDto? department)
+    [HttpPut]
+    public async Task<IActionResult> Edit(Guid id, [FromBody] DepartmentForUpdateDto? department)
     {
         if (department is null)
         {
@@ -69,7 +67,7 @@ public class DepartmentController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete]
     public async Task<IActionResult> Delete(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteDepartmentCommand(id));
