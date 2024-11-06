@@ -5,28 +5,25 @@ using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 
 namespace AccountEnterprise.Web.Controllers;
-
-[Route("api/categories")]
-[ApiController]
-public class CategoryController : ControllerBase
+public class CategoriesController : Controller
 {
     private readonly IMediator _mediator;
 
-    public CategoryController(IMediator mediator)
+    public CategoriesController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Index()
     {
         var categories = await _mediator.Send(new GetCategoriesQuery());
 
-        return Ok(categories);
+        return View(categories);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Details(Guid id)
     {
         var category = await _mediator.Send(new GetCategoryByIdQuery(id));
 
@@ -35,7 +32,7 @@ public class CategoryController : ControllerBase
             return NotFound($"Category with id {id} is not found.");
         }
         
-        return Ok(category);
+        return View(category);
     }
 
     [HttpPost]
@@ -51,8 +48,8 @@ public class CategoryController : ControllerBase
         return CreatedAtAction(nameof(Create), category);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] CategoryForUpdateDto? category)
+    [HttpPut]
+    public async Task<IActionResult> Edit(Guid id, [FromBody] CategoryForUpdateDto? category)
     {
         if (category is null)
         {
@@ -69,7 +66,7 @@ public class CategoryController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete]
     public async Task<IActionResult> Delete(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteCategoryCommand(id));

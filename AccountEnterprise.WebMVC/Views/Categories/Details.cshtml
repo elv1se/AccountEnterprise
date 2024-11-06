@@ -1,0 +1,20 @@
+﻿@model AccountEnterprise.Application.Dtos.CategoryDto
+@{
+    Layout = "_Layout";
+}
+
+<h2>Детали категории</h2>
+
+<div>
+    <h4>Категория</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Название</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">Описание</dt>
+        <dd class="col-sm-10">@Model.Description</dd>
+    </dl>
+</div>
+<a asp-controller="Categories" asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a> |
+<a asp-controller="Categories" asp-action="Index">Назад к списку</a>
