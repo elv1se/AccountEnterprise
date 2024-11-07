@@ -6,27 +6,25 @@ using AccountEnterprise.Application.Requests.Commands;
 
 namespace AccountEnterprise.Web.Controllers;
 
-[Route("api/operations")]
-[ApiController]
-public class OperationController : ControllerBase
+public class OperationsController : Controller
 {
     private readonly IMediator _mediator;
 
-    public OperationController(IMediator mediator)
+    public OperationsController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Index()
     {
         var operations = await _mediator.Send(new GetOperationsQuery());
 
-        return Ok(operations);
+        return View(operations);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Details(Guid id)
     {
         var operation = await _mediator.Send(new GetOperationByIdQuery(id));
 
@@ -35,7 +33,7 @@ public class OperationController : ControllerBase
             return NotFound($"Operation with id {id} is not found.");
         }
         
-        return Ok(operation);
+        return View(operation);
     }
 
     [HttpPost]
@@ -51,7 +49,7 @@ public class OperationController : ControllerBase
         return CreatedAtAction(nameof(Create), operation);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut]
     public async Task<IActionResult> Update(Guid id, [FromBody] OperationForUpdateDto? operation)
     {
         if (operation is null)
@@ -69,7 +67,7 @@ public class OperationController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete]
     public async Task<IActionResult> Delete(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteOperationCommand(id));

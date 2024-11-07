@@ -1,0 +1,37 @@
+﻿@model IEnumerable<AccountEnterprise.Application.Dtos.OperationDto>
+
+@{
+    Layout = "_Layout";
+}
+
+<h2>Операции</h2>
+
+<a asp-controller="Operations" asp-action="Create">Создать новую операцию</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Сумма</th>
+            <th>Дата</th>
+            <th>Категория</th>
+            <th>Тип операции</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var operation in Model)
+        {
+            <tr>
+                <td>@operation.Name</td>
+                <td>@operation.Amount</td>
+                <td>@operation.Date.ToString("dd-MM-yyyy")</td> <!-- Форматирование даты -->
+                <td>@operation.Category?.Name</td> <!-- Отображаем имя категории -->
+                <td>@operation.OperationType?.Name</td> <!-- Отображаем имя типа операции -->
+                <td>
+                    <a asp-controller="Operations" asp-action="Details" asp-route-id="@operation.Id">Детали</a> |
+                    <a asp-controller="Operations" asp-action="Delete" asp-route-id="@operation.Id">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

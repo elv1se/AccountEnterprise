@@ -6,27 +6,25 @@ using AccountEnterprise.Application.Requests.Commands;
 
 namespace AccountEnterprise.Web.Controllers;
 
-[Route("api/operationTypes")]
-[ApiController]
-public class OperationTypeController : ControllerBase
+public class OperationTypesController : Controller
 {
     private readonly IMediator _mediator;
 
-    public OperationTypeController(IMediator mediator)
+    public OperationTypesController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Index()
     {
         var operationTypes = await _mediator.Send(new GetOperationTypesQuery());
 
-        return Ok(operationTypes);
+        return View(operationTypes);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Details(Guid id)
     {
         var operationType = await _mediator.Send(new GetOperationTypeByIdQuery(id));
 
@@ -35,7 +33,7 @@ public class OperationTypeController : ControllerBase
             return NotFound($"OperationType with id {id} is not found.");
         }
         
-        return Ok(operationType);
+        return View(operationType);
     }
 
     [HttpPost]
@@ -51,8 +49,8 @@ public class OperationTypeController : ControllerBase
         return CreatedAtAction(nameof(Create), operationType);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] OperationTypeForUpdateDto? operationType)
+    [HttpPut]
+    public async Task<IActionResult> Edit(Guid id, [FromBody] OperationTypeForUpdateDto? operationType)
     {
         if (operationType is null)
         {
@@ -69,7 +67,7 @@ public class OperationTypeController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete]
     public async Task<IActionResult> Delete(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteOperationTypeCommand(id));
