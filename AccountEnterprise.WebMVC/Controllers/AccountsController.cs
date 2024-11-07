@@ -17,6 +17,7 @@ public class AccountsController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Index()
     {
         var accounts = await _mediator.Send(new GetAccountsQuery());
@@ -25,6 +26,7 @@ public class AccountsController : Controller
 
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Details(Guid id)
     {
         var account = await _mediator.Send(new GetAccountByIdQuery(id));

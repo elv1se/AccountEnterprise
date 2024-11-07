@@ -16,6 +16,7 @@ public class TransactionsController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Index()
     {
         var transactions = await _mediator.Send(new GetTransactionsQuery());
@@ -24,6 +25,7 @@ public class TransactionsController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Details(Guid id)
     {
         var transaction = await _mediator.Send(new GetTransactionByIdQuery(id));

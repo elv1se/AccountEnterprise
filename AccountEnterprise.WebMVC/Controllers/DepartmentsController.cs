@@ -16,6 +16,7 @@ public class DepartmentsController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Index()
     {
         var departments = await _mediator.Send(new GetDepartmentsQuery());
@@ -24,6 +25,7 @@ public class DepartmentsController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Details(Guid id)
     {
         var department = await _mediator.Send(new GetDepartmentByIdQuery(id));

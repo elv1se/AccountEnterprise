@@ -15,6 +15,7 @@ public class CategoriesController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Index()
     {
         var categories = await _mediator.Send(new GetCategoriesQuery());
@@ -23,6 +24,7 @@ public class CategoriesController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Details(Guid id)
     {
         var category = await _mediator.Send(new GetCategoryByIdQuery(id));

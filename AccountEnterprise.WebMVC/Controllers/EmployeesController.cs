@@ -16,6 +16,7 @@ public class EmployeesController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Index()
     {
         var employees = await _mediator.Send(new GetEmployeesQuery());
@@ -24,6 +25,7 @@ public class EmployeesController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Details(Guid id)
     {
         var employee = await _mediator.Send(new GetEmployeeByIdQuery(id));

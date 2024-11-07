@@ -3,6 +3,7 @@ using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.WebMVC.Extensions;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCaching;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccountEnterprise.WebMVC
@@ -13,7 +14,12 @@ namespace AccountEnterprise.WebMVC
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-
+            builder.Services.AddResponseCaching();
+            builder.Services.Configure<ResponseCachingOptions>(options =>
+            {
+                options.MaximumBodySize = 1024 * 1024; 
+                options.UseCaseSensitivePaths = false;   
+            });
             builder.Services.ConfigureCors();
 			builder.Services.AddControllersWithViews();
             builder.Services.ConfigureDbContext(builder.Configuration);
@@ -41,6 +47,7 @@ namespace AccountEnterprise.WebMVC
                 app.UseHsts();
             }
 
+            app.UseResponseCaching();
             app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
             app.UseStaticFiles();

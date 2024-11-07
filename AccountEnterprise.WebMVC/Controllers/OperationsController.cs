@@ -16,6 +16,7 @@ public class OperationsController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Index()
     {
         var operations = await _mediator.Send(new GetOperationsQuery());
@@ -24,6 +25,7 @@ public class OperationsController : Controller
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Details(Guid id)
     {
         var operation = await _mediator.Send(new GetOperationByIdQuery(id));
