@@ -1,0 +1,33 @@
+﻿@model IEnumerable<AccountEnterprise.Application.Dtos.TransactionDto>
+
+@{
+    Layout = "_Layout";
+}
+
+<h2>Транзакции</h2>
+
+<a asp-controller="Transactions" asp-action="Create">Создать новую транзакцию</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Тип</th>
+            <th>Операция</th>
+            <th>Департамент</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in Model)
+        {
+            <tr>
+                <td>@transaction.Type</td>
+                <td>@transaction.Operation?.Name</td> 
+                <td>@transaction.Department?.Name</td>
+                <td>
+                    <a asp-controller="Transactions" asp-action="Details" asp-route-id="@transaction.Id">Детали</a> |
+                    <a asp-controller="Transactions" asp-action="Delete" asp-route-id="@transaction.Id">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

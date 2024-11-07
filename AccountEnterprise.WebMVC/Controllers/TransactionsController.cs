@@ -6,27 +6,25 @@ using AccountEnterprise.Application.Requests.Commands;
 
 namespace AccountEnterprise.Web.Controllers;
 
-[Route("api/transactions")]
-[ApiController]
-public class TransactionController : ControllerBase
+public class TransactionsController : Controller
 {
     private readonly IMediator _mediator;
 
-    public TransactionController(IMediator mediator)
+    public TransactionsController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Index()
     {
         var transactions = await _mediator.Send(new GetTransactionsQuery());
 
-        return Ok(transactions);
+        return View(transactions);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Details(Guid id)
     {
         var transaction = await _mediator.Send(new GetTransactionByIdQuery(id));
 
@@ -35,7 +33,7 @@ public class TransactionController : ControllerBase
             return NotFound($"Transaction with id {id} is not found.");
         }
         
-        return Ok(transaction);
+        return View(transaction);
     }
 
     [HttpPost]
@@ -51,8 +49,8 @@ public class TransactionController : ControllerBase
         return CreatedAtAction(nameof(Create), transaction);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] TransactionForUpdateDto? transaction)
+    [HttpPut]
+    public async Task<IActionResult> Edit(Guid id, [FromBody] TransactionForUpdateDto? transaction)
     {
         if (transaction is null)
         {
@@ -69,7 +67,7 @@ public class TransactionController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete]
     public async Task<IActionResult> Delete(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteTransactionCommand(id));

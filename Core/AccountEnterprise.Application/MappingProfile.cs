@@ -38,7 +38,7 @@ public class MappingProfile : Profile
         CreateMap<OperationForCreationDto, Operation>();
 		CreateMap<OperationForUpdateDto, Operation>();
 
-		CreateMap<Transaction, TransactionDto>()
+        CreateMap<Transaction, TransactionDto>()
             .ForMember(x => x.Id, opt => opt.MapFrom(a => a.TransactionId));
         CreateMap<TransactionForCreationDto, Transaction>();
 		CreateMap<TransactionForUpdateDto, Transaction>();
