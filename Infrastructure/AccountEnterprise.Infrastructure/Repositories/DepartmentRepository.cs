@@ -12,13 +12,13 @@ public class DepartmentRepository(AppDbContext dbContext) : IDepartmentRepositor
 
     public async Task<IEnumerable<Department>> Get(bool trackChanges) =>
         await (!trackChanges 
-            ? _dbContext.Departments.AsNoTracking() 
-            : _dbContext.Departments).ToListAsync();
+            ? _dbContext.Departments.Include(x => x.Employees).Include(x => x.Transactions).ThenInclude(x => x.Operation.OperationType).AsNoTracking() 
+            : _dbContext.Departments.Include(x => x.Employees).Include(x => x.Transactions).ThenInclude(x => x.Operation.OperationType)).ToListAsync();
 
     public async Task<Department?> GetById(Guid id, bool trackChanges) =>
         await (!trackChanges ?
-            _dbContext.Departments.AsNoTracking() :
-            _dbContext.Departments).SingleOrDefaultAsync(e => e.DepartmentId == id);
+            _dbContext.Departments.Include(x => x.Employees).Include(x => x.Transactions).ThenInclude(x => x.Operation.OperationType).AsNoTracking() :
+            _dbContext.Departments.Include(x => x.Employees).Include(x => x.Transactions).ThenInclude(x => x.Operation.OperationType)).SingleOrDefaultAsync(e => e.DepartmentId == id);
 
     public void Delete(Department entity) => _dbContext.Departments.Remove(entity);
 

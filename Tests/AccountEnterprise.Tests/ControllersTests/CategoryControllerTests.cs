@@ -53,7 +53,7 @@ public class CategoryControllerTests
     {
         // Arrange
         var categoryId = Guid.NewGuid();
-        var category = new CategoryDto { Id = categoryId };
+        var category = new CategoryDto { CategoryId = categoryId };
 
         _mediatorMock
             .Setup(m => m.Send(new GetCategoryByIdQuery(categoryId), CancellationToken.None))
@@ -78,7 +78,7 @@ public class CategoryControllerTests
     {
         // Arrange
         var categoryId = Guid.NewGuid();
-        var category = new CategoryDto { Id = categoryId };
+        var category = new CategoryDto { CategoryId = categoryId };
 
         _mediatorMock
             .Setup(m => m.Send(new GetCategoryByIdQuery(categoryId), CancellationToken.None))

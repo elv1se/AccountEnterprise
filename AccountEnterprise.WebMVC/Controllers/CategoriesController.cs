@@ -37,39 +37,76 @@ public class CategoriesController : Controller
         return View(category);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CategoryForCreationDto? category)
+    [HttpGet]
+    public IActionResult Create()
     {
-        if (category is null)
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromForm] CategoryForCreationDto? department)
+    {
+        if (department is null)
         {
             return BadRequest("Object for creation is null");
         }
 
-        await _mediator.Send(new CreateCategoryCommand(category));
+        await _mediator.Send(new CreateCategoryCommand(department));
 
-        return CreatedAtAction(nameof(Create), category);
+        return RedirectToAction(nameof(Index));
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Edit(Guid id, [FromBody] CategoryForUpdateDto? category)
+    [HttpGet]
+    public async Task<IActionResult> Edit(Guid id)
     {
-        if (category is null)
+        var isEntityFound = await _mediator.Send(new GetCategoryByIdQuery(id));
+        if (isEntityFound == null)
+        {
+            return NotFound();
+        }
+
+        CategoryForUpdateDto model = new()
+        {
+            Name = isEntityFound.Name,
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Edit(Guid id, [FromForm] CategoryForUpdateDto? department)
+    {
+        if (department is null)
         {
             return BadRequest("Object for update is null");
         }
 
-        var isEntityFound = await _mediator.Send(new UpdateCategoryCommand(category));
+        var isEntityFound = await _mediator.Send(new UpdateCategoryCommand(department));
 
         if (!isEntityFound)
         {
             return NotFound($"Category with id {id} is not found.");
         }
 
-        return NoContent();
+        return RedirectToAction(nameof(Index));
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Delete(Guid? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var achievement = await _mediator.Send(new GetCategoryByIdQuery((Guid)id));
+
+        return View(achievement);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteCategoryCommand(id));
 
@@ -78,6 +115,7 @@ public class CategoriesController : Controller
             return NotFound($"Category with id {id} is not found.");
         }
 
-        return NoContent();
+        return RedirectToAction(nameof(Index));
+
     }
 }

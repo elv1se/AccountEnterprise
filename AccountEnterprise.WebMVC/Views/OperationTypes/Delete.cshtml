@@ -1,0 +1,28 @@
+﻿@model AccountEnterprise.Application.Dtos.OperationTypeDto
+
+@{
+    ViewData["Title"] = "Удаление вида операции";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Удаление вида операции</h2>
+
+<h3>Вы уверены, что хотите удалить следующий вид операции?</h3>
+<div>
+    <h4>Вид операции</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="OperationTypeId" />
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a class="btn btn-sm btn-primary" asp-controller="OperationTypes" asp-action="Index" class="btn btn-default">Вернуться к списку</a>
+    </form>
+</div>

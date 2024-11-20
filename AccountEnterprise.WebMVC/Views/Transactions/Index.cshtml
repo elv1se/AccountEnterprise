@@ -6,7 +6,8 @@
 
 <h2>Транзакции</h2>
 
-<a asp-controller="Transactions" asp-action="Create">Создать новую транзакцию</a>
+<a class="btn btn-primary" asp-controller="Transactions" asp-action="Create">Создать новую транзакцию</a>
+<br/>
 <table class="table">
     <thead>
         <tr>
@@ -24,8 +25,8 @@
                 <td>@transaction.Operation?.Name</td> 
                 <td>@transaction.Department?.Name</td>
                 <td>
-                    <a asp-controller="Transactions" asp-action="Details" asp-route-id="@transaction.Id">Детали</a> |
-                    <a asp-controller="Transactions" asp-action="Delete" asp-route-id="@transaction.Id">Удалить</a>
+                    <a class="btn btn-sm btn-primary" asp-controller="Transactions" asp-action="Details" asp-route-id="@transaction.Id">Детали</a> |
+                    <a class="btn btn-sm btn-danger" asp-controller="Transactions" asp-action="Delete" asp-route-id="@transaction.Id">Удалить</a>
                 </td>
             </tr>
         }

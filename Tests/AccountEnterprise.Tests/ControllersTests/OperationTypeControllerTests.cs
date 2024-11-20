@@ -53,7 +53,7 @@ public class OperationTypeControllerTests
     {
         // Arrange
         var operationTypeId = Guid.NewGuid();
-        var operationType = new OperationTypeDto { Id = operationTypeId };
+        var operationType = new OperationTypeDto { OperationTypeId = operationTypeId };
 
         _mediatorMock
             .Setup(m => m.Send(new GetOperationTypeByIdQuery(operationTypeId), CancellationToken.None))
@@ -78,7 +78,7 @@ public class OperationTypeControllerTests
     {
         // Arrange
         var operationTypeId = Guid.NewGuid();
-        var operationType = new OperationTypeDto { Id = operationTypeId };
+        var operationType = new OperationTypeDto { OperationTypeId = operationTypeId };
 
         _mediatorMock
             .Setup(m => m.Send(new GetOperationTypeByIdQuery(operationTypeId), CancellationToken.None))

@@ -53,7 +53,7 @@ public class DepartmentControllerTests
     {
         // Arrange
         var departmentId = Guid.NewGuid();
-        var department = new DepartmentDto { Id = departmentId };
+        var department = new DepartmentDto { DepartmentId = departmentId };
 
         _mediatorMock
             .Setup(m => m.Send(new GetDepartmentByIdQuery(departmentId), CancellationToken.None))
@@ -78,7 +78,7 @@ public class DepartmentControllerTests
     {
         // Arrange
         var departmentId = Guid.NewGuid();
-        var department = new DepartmentDto { Id = departmentId };
+        var department = new DepartmentDto { DepartmentId = departmentId };
 
         _mediatorMock
             .Setup(m => m.Send(new GetDepartmentByIdQuery(departmentId), CancellationToken.None))

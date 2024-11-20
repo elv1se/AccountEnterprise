@@ -3,9 +3,11 @@
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccountEnterprise.Web.Controllers;
 
+[Authorize(Roles = "admin")]
 public class OperationTypesController : Controller
 {
     private readonly IMediator _mediator;
@@ -38,39 +40,76 @@ public class OperationTypesController : Controller
         return View(operationType);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] OperationTypeForCreationDto? operationType)
+    [HttpGet]
+    public IActionResult Create()
     {
-        if (operationType is null)
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromForm] OperationTypeForCreationDto? department)
+    {
+        if (department is null)
         {
             return BadRequest("Object for creation is null");
         }
 
-        await _mediator.Send(new CreateOperationTypeCommand(operationType));
+        await _mediator.Send(new CreateOperationTypeCommand(department));
 
-        return CreatedAtAction(nameof(Create), operationType);
+        return RedirectToAction(nameof(Index));
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Edit(Guid id, [FromBody] OperationTypeForUpdateDto? operationType)
+    [HttpGet]
+    public async Task<IActionResult> Edit(Guid id)
     {
-        if (operationType is null)
+        var isEntityFound = await _mediator.Send(new GetOperationTypeByIdQuery(id));
+        if (isEntityFound == null)
+        {
+            return NotFound();
+        }
+
+        OperationTypeForUpdateDto model = new()
+        {
+            Name = isEntityFound.Name,
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Edit(Guid id, [FromForm] OperationTypeForUpdateDto? department)
+    {
+        if (department is null)
         {
             return BadRequest("Object for update is null");
         }
 
-        var isEntityFound = await _mediator.Send(new UpdateOperationTypeCommand(operationType));
+        var isEntityFound = await _mediator.Send(new UpdateOperationTypeCommand(department));
 
         if (!isEntityFound)
         {
             return NotFound($"OperationType with id {id} is not found.");
         }
 
-        return NoContent();
+        return RedirectToAction(nameof(Index));
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Delete(Guid? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var achievement = await _mediator.Send(new GetOperationTypeByIdQuery((Guid)id));
+
+        return View(achievement);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteOperationTypeCommand(id));
 
@@ -79,6 +118,7 @@ public class OperationTypesController : Controller
             return NotFound($"OperationType with id {id} is not found.");
         }
 
-        return NoContent();
+        return RedirectToAction(nameof(Index));
+
     }
 }

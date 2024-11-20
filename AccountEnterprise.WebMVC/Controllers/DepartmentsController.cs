@@ -38,8 +38,14 @@ public class DepartmentsController : Controller
         return View(department);
     }
 
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] DepartmentForCreationDto? department)
+    public async Task<IActionResult> Create([FromForm] DepartmentForCreationDto? department)
     {
         if (department is null)
         {
@@ -48,11 +54,28 @@ public class DepartmentsController : Controller
 
         await _mediator.Send(new CreateDepartmentCommand(department));
 
-        return CreatedAtAction(nameof(Create), department);
+        return RedirectToAction(nameof(Index));
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Edit(Guid id, [FromBody] DepartmentForUpdateDto? department)
+    [HttpGet]
+    public async Task<IActionResult> Edit(Guid id)
+    {
+        var isEntityFound = await _mediator.Send(new GetDepartmentByIdQuery(id));
+        if (isEntityFound == null)
+        {
+            return NotFound();
+        }
+
+        DepartmentForUpdateDto model = new()
+        {
+            Name = isEntityFound.Name,
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Edit(Guid id, [FromForm] DepartmentForUpdateDto? department)
     {
         if (department is null)
         {
@@ -66,11 +89,25 @@ public class DepartmentsController : Controller
             return NotFound($"Department with id {id} is not found.");
         }
 
-        return NoContent();
+        return RedirectToAction(nameof(Index));
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Delete(Guid? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var achievement = await _mediator.Send(new GetDepartmentByIdQuery((Guid)id));
+
+        return View(achievement);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteDepartmentCommand(id));
 
@@ -79,6 +116,7 @@ public class DepartmentsController : Controller
             return NotFound($"Department with id {id} is not found.");
         }
 
-        return NoContent();
+        return RedirectToAction(nameof(Index));
+
     }
 }

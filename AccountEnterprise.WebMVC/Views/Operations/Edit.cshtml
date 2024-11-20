@@ -1,0 +1,61 @@
+﻿@model AccountEnterprise.Application.Dtos.OperationForUpdateDto
+
+@{
+    ViewData["Title"] = "Редактирование операции";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Редактировать операцию</h2>
+
+<form asp-action="Edit" asp-controller="Operations">
+    <h4>Операция</h4>
+    <hr />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <input type="hidden" asp-for="Id" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Name" class="control-label">Название операции</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label">Сумма</label>
+        <input asp-for="Amount" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Date" class="control-label">Дата</label>
+        <input asp-for="Date" class="form-control" type="date" />
+        <span asp-validation-for="Date" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategoryId" class="control-label">Категория</label>
+        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="OperationTypeId" class="control-label">Тип операции</label>
+        <select asp-for="OperationTypeId" class="form-control" asp-items="ViewBag.OperationTypeId"></select>
+        <span asp-validation-for="OperationTypeId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Сохранить" class="btn btn-warning" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index" class="btn btn-sm btn-primary">Вернуться</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

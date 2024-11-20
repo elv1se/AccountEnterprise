@@ -18,5 +18,5 @@ public class GetOperationsQueryHandler : IRequestHandler<GetOperationsQuery, IEn
 	}
 
 	public async Task<IEnumerable<OperationDto>> Handle(GetOperationsQuery request, CancellationToken cancellationToken) => 
-		_mapper.Map<IEnumerable<OperationDto>>(await _repository.Get(trackChanges: false));
+		_mapper.Map<IEnumerable<OperationDto>>(await _repository.Get(request.OperationParameters, trackChanges: false));
 }

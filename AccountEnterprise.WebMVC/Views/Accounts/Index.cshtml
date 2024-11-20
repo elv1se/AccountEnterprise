@@ -5,7 +5,8 @@
 
 <h2>Счета</h2>
 
-<a asp-controller="Accounts" asp-action="Create">Создать новый счет</a>
+<a class="btn btn-primary" asp-controller="Accounts" asp-action="Create">Создать новый счет</a>
+<br/>
 <table class="table">
     <thead>
         <tr>
@@ -25,8 +26,8 @@
                 <td>@account.BankName</td>
                 <td>@account.Type</td>
                 <td>
-                    <a asp-controller="Accounts" asp-action="Details" asp-route-id="@account.Id">Детали</a> |
-                    <a asp-controller="Accounts" asp-action="Delete" asp-route-id="@account.Id">Удалить</a>
+                    <a class="btn btn-sm btn-primary" asp-controller="Accounts" asp-action="Details" asp-route-id="@account.Id">Подробнее</a> |
+                    <a class="btn btn-sm btn-danger" asp-controller="Accounts" asp-action="Delete" asp-route-id="@account.Id">Удалить</a>
                 </td>
             </tr>
         }

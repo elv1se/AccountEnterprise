@@ -1,8 +1,11 @@
+using AccountEnterprise.Domain.Entities;
+
 namespace AccountEnterprise.Application.Dtos;
 
 public class OperationTypeDto 
 {
-	public Guid Id { get; set; }
+	public Guid OperationTypeId { get; set; }
 	public string Name { get; set; }
+    public ICollection<OperationDto> Operations { get; set; }
 }
 

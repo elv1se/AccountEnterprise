@@ -3,6 +3,7 @@
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
+using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Web.Controllers;
 
@@ -18,9 +19,9 @@ public class OperationController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] OperationParameters operationParameters)
     {
-        var operations = await _mediator.Send(new GetOperationsQuery());
+        var operations = await _mediator.Send(new GetOperationsQuery(operationParameters));
 
         return Ok(operations);
     }

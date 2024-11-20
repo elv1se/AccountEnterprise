@@ -5,13 +5,12 @@
 
 <h2>Сотрудники</h2>
 
-<a asp-controller="Employees" asp-action="Create">Создать нового сотрудника</a>
+<a class="btn btn-primary" asp-controller="Employees" asp-action="Create">Создать нового сотрудника</a>
+<br />
 <table class="table">
     <thead>
         <tr>
-            <th>Фамилия</th>
-            <th>Имя</th>
-            <th>Отчество</th>
+            <th>ФИО</th>
             <th>Должность</th>
             <th>Департамент</th>
             <th>Действия</th>
@@ -21,14 +20,12 @@
         @foreach (var employee in Model)
         {
             <tr>
-                <td>@employee.Surname</td>
-                <td>@employee.Name</td>
-                <td>@employee.Midname</td>
+                <td>@employee.FullName</td>
                 <td>@employee.Position</td>
                 <td>@employee.Department?.Name</td> 
                 <td>
-                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">Детали</a> |
-                    <a asp-controller="Employees" asp-action="Delete" asp-route-id="@employee.Id">Удалить</a>
+                    <a class="btn btn-sm btn-primary" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">Подробнее</a> |
+                    <a class="btn btn-sm btn-danger" asp-controller="Employees" asp-action="Delete" asp-route-id="@employee.Id">Удалить</a>
                 </td>
             </tr>
         }

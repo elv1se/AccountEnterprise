@@ -1,8 +1,11 @@
-﻿namespace AccountEnterprise.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 
-public partial class Transaction
+namespace AccountEnterprise.Domain.Entities;
+
+public class Transaction
 {
-	public Guid TransactionId { get; set; }
+    [Key]
+    public Guid TransactionId { get; set; }
 
 	public string Type { get; set; } = null!;
 

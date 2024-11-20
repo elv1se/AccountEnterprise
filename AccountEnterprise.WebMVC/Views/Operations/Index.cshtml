@@ -5,8 +5,41 @@
 }
 
 <h2>Операции</h2>
-
-<a asp-controller="Operations" asp-action="Create">Создать новую операцию</a>
+<form method="get">
+    <div class="form-row align-items-end">
+        <div class="col-auto">
+            <label for="searchMonth">Месяц</label>
+            <select id="searchMonth" name="searchMonth" class="form-control">
+                <option value="">-- Выберите месяц --</option>
+                <option value="1">январь</option>
+                <option value="2">февраль</option>
+                <option value="3">март</option>
+                <option value="4">апрель</option>
+                <option value="5">май</option>
+                <option value="6">июнь</option>
+                <option value="7">июль</option>
+                <option value="8">август</option>
+                <option value="9">сентябрь</option>
+                <option value="10">октябрь</option>
+                <option value="11">ноябрь</option>
+                <option value="12">декабрь</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <label for="searchType">Отдел</label>
+            <select id="searchType" name="searchType" class="form-control" asp-items="ViewBag.OperationTypeId">
+                <option value="">-- Выберите тип операции --</option>
+            </select>
+        </div>
+        <br />
+        <div class="col-auto">
+            <button type="submit" class="btn btn-secondary">Найти</button>
+        </div>
+    </div>
+</form>
+<br />
+<a class="btn btn-primary" asp-controller="Operations" asp-action="Create">Создать новую операцию</a>
+<br />
 <table class="table">
     <thead>
         <tr>
@@ -24,12 +57,12 @@
             <tr>
                 <td>@operation.Name</td>
                 <td>@operation.Amount</td>
-                <td>@operation.Date.ToString("dd-MM-yyyy")</td> <!-- Форматирование даты -->
-                <td>@operation.Category?.Name</td> <!-- Отображаем имя категории -->
-                <td>@operation.OperationType?.Name</td> <!-- Отображаем имя типа операции -->
+                <td>@operation.Date.ToString("dd-MM-yyyy")</td> 
+                <td>@operation.Category?.Name</td>
+                <td>@operation.OperationType?.Name</td>
                 <td>
-                    <a asp-controller="Operations" asp-action="Details" asp-route-id="@operation.Id">Детали</a> |
-                    <a asp-controller="Operations" asp-action="Delete" asp-route-id="@operation.Id">Удалить</a>
+                    <a class="btn btn-sm btn-primary" asp-controller="Operations" asp-action="Details" asp-route-id="@operation.OperationId">Подробнее</a> |
+                    <a class="btn btn-sm btn-danger" asp-controller="Operations" asp-action="Delete" asp-route-id="@operation.OperationId">Удалить</a>
                 </td>
             </tr>
         }

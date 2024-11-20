@@ -1,7 +1,10 @@
-﻿namespace AccountEnterprise.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 
-public partial class Account
+namespace AccountEnterprise.Domain.Entities;
+
+public class Account
 {
+	[Key]
 	public Guid AccountId { get; set; }
 
 	public Guid DepartmentId { get; set; }

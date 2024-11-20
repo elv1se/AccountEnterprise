@@ -4,8 +4,8 @@
 }
 
 <h2>Отделы</h2>
-<a asp-controller="Departments" asp-action="Create">Создать новый отдел</a>
-
+<a class="btn btn-primary" asp-controller="Departments" asp-action="Create">Создать новый отдел</a>
+<br/>
 <table class="table">
     <thead>
         <tr>
@@ -19,8 +19,8 @@
             <tr>
                 <td>@department.Name</td>
                 <td>
-                    <a asp-controller="Departments" asp-action="Details" asp-route-id="@department.Id">Детали</a> |
-                    <a asp-controller="Departments" asp-action="Delete" asp-route-id="@department.Id">Удалить</a>
+                    <a class="btn btn-sm btn-primary" asp-controller="Departments" asp-action="Details" asp-route-id="@department.DepartmentId">Подробнее</a> |
+                    <a class="btn btn-sm btn-danger" asp-controller="Departments" asp-action="Delete" asp-route-id="@department.DepartmentId">Удалить</a>
                 </td>
             </tr>
         }
