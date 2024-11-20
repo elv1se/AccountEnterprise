@@ -9,6 +9,7 @@ public class Operation
 
 	public string Name { get; set; } = null!;
 
+	[Range(0.01, double.MaxValue)]
 	public decimal Amount { get; set; }
 
 	public DateOnly Date { get; set; }
