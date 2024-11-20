@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AccountEnterprise.Web.Controllers;
 
-[Authorize(Roles = "admin")]
+[Authorize]
 public class OperationTypesController : Controller
 {
     private readonly IMediator _mediator;
@@ -47,6 +47,7 @@ public class OperationTypesController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Create([FromForm] OperationTypeForCreationDto? department)
     {
         if (department is null)
@@ -77,6 +78,7 @@ public class OperationTypesController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Edit(Guid id, [FromForm] OperationTypeForUpdateDto? department)
     {
         if (department is null)
@@ -109,6 +111,7 @@ public class OperationTypesController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteOperationTypeCommand(id));

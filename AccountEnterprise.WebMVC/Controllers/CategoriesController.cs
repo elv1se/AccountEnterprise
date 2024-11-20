@@ -3,8 +3,10 @@
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccountEnterprise.Web.Controllers;
+[Authorize]
 public class CategoriesController : Controller
 {
     private readonly IMediator _mediator;
@@ -44,6 +46,7 @@ public class CategoriesController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Create([FromForm] CategoryForCreationDto? department)
     {
         if (department is null)
@@ -74,6 +77,7 @@ public class CategoriesController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Edit(Guid id, [FromForm] CategoryForUpdateDto? department)
     {
         if (department is null)
@@ -106,6 +110,7 @@ public class CategoriesController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteCategoryCommand(id));

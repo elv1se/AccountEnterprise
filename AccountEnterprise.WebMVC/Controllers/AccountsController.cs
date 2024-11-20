@@ -53,6 +53,7 @@ public class AccountsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Create([FromForm] AccountForCreationDto? employee)
     {
         if (employee is null)
@@ -91,6 +92,7 @@ public class AccountsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Edit(Guid id, [FromForm] AccountForUpdateDto? employee)
     {
         if (employee is null)
@@ -123,6 +125,7 @@ public class AccountsController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteAccountCommand(id));

@@ -5,6 +5,7 @@ using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using AccountEnterprise.Domain.RequestFeatures;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccountEnterprise.Web.Controllers;
 
@@ -58,6 +59,7 @@ public class TransactionsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Create([FromForm] TransactionForCreationDto? employee)
     {
         if (employee is null)
@@ -101,6 +103,7 @@ public class TransactionsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Edit(Guid id, [FromForm] TransactionForUpdateDto? employee)
     {
         if (employee is null)
@@ -133,6 +136,7 @@ public class TransactionsController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteTransactionCommand(id));

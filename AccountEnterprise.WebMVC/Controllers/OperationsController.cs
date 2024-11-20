@@ -5,9 +5,11 @@ using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Domain.RequestFeatures;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OperationEnterprise.Web.Controllers;
 
+[Authorize]
 public class OperationsController : Controller
 {
     private readonly IMediator _mediator;
@@ -62,6 +64,7 @@ public class OperationsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Create([FromForm] OperationForCreationDto? employee)
     {
         if (employee is null)
@@ -106,6 +109,7 @@ public class OperationsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Edit(Guid id, [FromForm] OperationForUpdateDto? employee)
     {
         if (employee is null)
@@ -138,6 +142,7 @@ public class OperationsController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteOperationCommand(id));
