@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using AccountEnterprise.Domain.RequestFeatures;
 using System.Text.Json;
 
-namespace AccountEnterprise.Web.Controllers;
+namespace AccountEnterprise.WebMVC.Controllers;
 
 [Authorize]
 public class AccountsController : Controller

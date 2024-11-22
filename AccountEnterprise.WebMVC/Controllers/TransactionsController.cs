@@ -8,7 +8,7 @@ using AccountEnterprise.Domain.RequestFeatures;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 
-namespace AccountEnterprise.Web.Controllers;
+namespace AccountEnterprise.WebMVC.Controllers;
 
 public class TransactionsController : Controller
 {

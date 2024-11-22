@@ -5,18 +5,11 @@ using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Domain.RequestFeatures;
-<<<<<<< HEAD
 using Microsoft.AspNetCore.Authorization;
-=======
 using System.ComponentModel.Design;
 using System.Text.Json;
-<<<<<<< HEAD
->>>>>>> Добавление пагинации и поиска
-=======
-using Microsoft.AspNetCore.Authorization;
->>>>>>> Исправление ошибок
 
-namespace OperationEnterprise.Web.Controllers;
+namespace OperationEnterprise.WebMVC.Controllers;
 
 [Authorize]
 public class OperationsController : Controller
