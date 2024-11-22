@@ -5,8 +5,10 @@ using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using AccountEnterprise.Domain.RequestFeatures;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccountEnterprise.Web.Controllers;
+[Authorize]
 public class CategoriesController : Controller
 {
     private readonly IMediator _mediator;
