@@ -10,7 +10,11 @@ using Microsoft.AspNetCore.Authorization;
 =======
 using System.ComponentModel.Design;
 using System.Text.Json;
+<<<<<<< HEAD
 >>>>>>> Добавление пагинации и поиска
+=======
+using Microsoft.AspNetCore.Authorization;
+>>>>>>> Исправление ошибок
 
 namespace OperationEnterprise.Web.Controllers;
 

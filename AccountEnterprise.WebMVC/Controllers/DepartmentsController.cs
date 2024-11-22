@@ -8,7 +8,11 @@ using Microsoft.AspNetCore.Authorization;
 =======
 using AccountEnterprise.Domain.RequestFeatures;
 using System.Text.Json;
+<<<<<<< HEAD
 >>>>>>> Добавление пагинации и поиска
+=======
+using Microsoft.AspNetCore.Authorization;
+>>>>>>> Исправление ошибок
 
 namespace AccountEnterprise.Web.Controllers;
 

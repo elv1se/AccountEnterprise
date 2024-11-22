@@ -9,10 +9,15 @@ using AccountEnterprise.Domain.RequestFeatures;
 using Microsoft.AspNetCore.Authorization;
 =======
 using System.Text.Json;
+<<<<<<< HEAD
 >>>>>>> Добавление пагинации и поиска
+=======
+using Microsoft.AspNetCore.Authorization;
+>>>>>>> Исправление ошибок
 
 namespace AccountEnterprise.Web.Controllers;
 
+[Authorize]
 public class TransactionsController : Controller
 {
     private readonly IMediator _mediator;

@@ -9,18 +9,22 @@ using Microsoft.AspNetCore.Authorization;
 =======
 using AccountEnterprise.Domain.RequestFeatures;
 using System.Text.Json;
+<<<<<<< HEAD
 >>>>>>> Добавление пагинации и поиска
 
 namespace AccountEnterprise.Web.Controllers;
 [Authorize]
 public class EmployeesController : Controller
-{
-    private readonly IMediator _mediator;
+=======
+using Microsoft.AspNetCore.Authorization;
 
-    public EmployeesController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+namespace AccountEnterprise.Web.Controllers;
+
+[Authorize]
+public class EmployeesController(IMediator mediator) : Controller
+>>>>>>> Исправление ошибок
+{
+    private readonly IMediator _mediator = mediator;
 
     [HttpGet]
     [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]

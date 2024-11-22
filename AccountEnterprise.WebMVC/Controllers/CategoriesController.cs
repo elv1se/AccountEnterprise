@@ -8,6 +8,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AccountEnterprise.Web.Controllers;
+
 [Authorize]
 public class CategoriesController : Controller
 {
@@ -79,6 +80,7 @@ public class CategoriesController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Edit(Guid id, [FromForm] CategoryForUpdateDto? department)
     {
         if (department is null)
@@ -111,6 +113,7 @@ public class CategoriesController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteCategoryCommand(id));
