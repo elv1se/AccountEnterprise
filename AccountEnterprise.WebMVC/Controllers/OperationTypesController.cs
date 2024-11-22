@@ -5,7 +5,7 @@ using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using Microsoft.AspNetCore.Authorization;
 
-namespace AccountEnterprise.Web.Controllers;
+namespace AccountEnterprise.WebMVC.Controllers;
 
 [Authorize]
 public class OperationTypesController : Controller

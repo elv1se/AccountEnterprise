@@ -4,9 +4,11 @@ using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using AccountEnterprise.Domain.RequestFeatures;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 
-namespace AccountEnterprise.Web.Controllers;
+namespace AccountEnterprise.WebMVC.Controllers;
 [Authorize]
 public class EmployeesController : Controller
 {
@@ -19,12 +21,14 @@ public class EmployeesController : Controller
 
     [HttpGet]
     [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] EmployeeParameters parameters)
     {
-        var employees = await _mediator.Send(new GetEmployeesQuery());
-
-        return View(employees);
+        var pagedResult = await _mediator.Send(new GetEmployeesQuery(parameters));
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.MetaData));
+        ViewData["SearchPosition"] = parameters.SearchPosition;
+        return View(pagedResult);
     }
+    
 
     [HttpGet]
     [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
@@ -43,7 +47,7 @@ public class EmployeesController : Controller
     [HttpGet]
     public async Task<IActionResult> Create()
     {
-        var departments = await _mediator.Send(new GetDepartmentsQuery());
+        var departments = await _mediator.Send(new GetDepartmentsQuery(new()));
 
         if (departments != null)
             ViewData["DepartmentId"] = new SelectList(departments, "DepartmentId", "Name");
@@ -84,7 +88,7 @@ public class EmployeesController : Controller
             Position = isEntityFound.Position,
         };
 
-        var departments = await _mediator.Send(new GetDepartmentsQuery());
+        var departments = await _mediator.Send(new GetDepartmentsQuery(new()));
 
         if (departments != null)
             ViewData["DepartmentId"] = new SelectList(departments, "DepartmentId", "Name");

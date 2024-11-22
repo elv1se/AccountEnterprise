@@ -7,6 +7,7 @@ using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using AccountEnterprise.Web.Controllers;
+using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Tests.ControllersTests;
 
@@ -25,14 +26,15 @@ public class EmployeeControllerTests
     public async Task Get_ReturnsListOfEmployees()
     {
         // Arrange
-        var employees = new List<EmployeeDto> { new(), new() };
+        var employees = new PagedList<EmployeeDto>([new(), new()], 2, 1, 5);
+        var parameters = new EmployeeParameters();
 
         _mediatorMock
-            .Setup(m => m.Send(new GetEmployeesQuery(), CancellationToken.None))
+            .Setup(m => m.Send(new GetEmployeesQuery(parameters), CancellationToken.None))
             .ReturnsAsync(employees);
 
         // Act
-        var result = await _controller.Get();
+        var result = await _controller.Get(parameters);
 
         // Assert
         result.Should().NotBeNull();
@@ -45,7 +47,7 @@ public class EmployeeControllerTests
         value.Should().HaveCount(2);
         value.Should().BeEquivalentTo(employees);
 
-        _mediatorMock.Verify(m => m.Send(new GetEmployeesQuery(), CancellationToken.None), Times.Once);
+        _mediatorMock.Verify(m => m.Send(new GetEmployeesQuery(parameters), CancellationToken.None), Times.Once);
     }
 
     [Fact]

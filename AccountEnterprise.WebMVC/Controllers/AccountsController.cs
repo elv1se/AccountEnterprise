@@ -5,8 +5,10 @@ using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using AccountEnterprise.Domain.RequestFeatures;
+using System.Text.Json;
 
-namespace AccountEnterprise.Web.Controllers;
+namespace AccountEnterprise.WebMVC.Controllers;
 
 [Authorize]
 public class AccountsController : Controller
@@ -20,10 +22,12 @@ public class AccountsController : Controller
 
     [HttpGet]
     [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] AccountParameters parameters)
     {
-        var accounts = await _mediator.Send(new GetAccountsQuery());
-        return View(accounts);
+        var pagedResult = await _mediator.Send(new GetAccountsQuery(parameters));
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.MetaData));
+        ViewData["SearchNumber"] = parameters.SearchNumber;
+        return View(pagedResult);
     }
 
 
@@ -44,7 +48,7 @@ public class AccountsController : Controller
     [HttpGet]
     public async Task<IActionResult> Create()
     {
-        var departments = await _mediator.Send(new GetDepartmentsQuery());
+        var departments = await _mediator.Send(new GetDepartmentsQuery(new()));
 
         if (departments != null)
             ViewData["DepartmentId"] = new SelectList(departments, "DepartmentId", "Name");
@@ -83,7 +87,7 @@ public class AccountsController : Controller
             Number = isEntityFound.Number
         };
 
-        var departments = await _mediator.Send(new GetDepartmentsQuery());
+        var departments = await _mediator.Send(new GetDepartmentsQuery(new()));
 
         if (departments != null)
             ViewData["DepartmentId"] = new SelectList(departments, "DepartmentId", "Name");

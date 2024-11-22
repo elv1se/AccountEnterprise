@@ -4,4 +4,4 @@ using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Application.Requests.Queries;
 
-public record GetOperationsQuery(OperationParameters OperationParameters) : IRequest<IEnumerable<OperationDto>>;
+public record GetOperationsQuery(OperationParameters OperationParameters) : IRequest<PagedList<OperationDto>>;

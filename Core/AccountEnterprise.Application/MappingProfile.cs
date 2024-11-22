@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AccountEnterprise.Domain.Entities;
 using AccountEnterprise.Application.Dtos;
+using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Application;
 

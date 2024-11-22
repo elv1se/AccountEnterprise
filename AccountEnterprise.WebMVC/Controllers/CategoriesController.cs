@@ -3,9 +3,11 @@
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
+using AccountEnterprise.Domain.RequestFeatures;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 
-namespace AccountEnterprise.Web.Controllers;
+namespace AccountEnterprise.WebMVC.Controllers;
 [Authorize]
 public class CategoriesController : Controller
 {
@@ -18,11 +20,12 @@ public class CategoriesController : Controller
 
     [HttpGet]
     [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] CategoryParameters parameters)
     {
-        var categories = await _mediator.Send(new GetCategoriesQuery());
-
-        return View(categories);
+        var pagedResult = await _mediator.Send(new GetCategoriesQuery(parameters));
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.MetaData));
+        ViewData["SearchName"] = parameters.SearchName;
+        return View(pagedResult);
     }
 
     [HttpGet]

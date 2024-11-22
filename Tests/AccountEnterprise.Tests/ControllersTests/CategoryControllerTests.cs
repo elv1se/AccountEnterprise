@@ -7,6 +7,7 @@ using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using AccountEnterprise.Web.Controllers;
+using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Tests.ControllersTests;
 
@@ -25,14 +26,14 @@ public class CategoryControllerTests
     public async Task Get_ReturnsListOfCategories()
     {
         // Arrange
-        var categories = new List<CategoryDto> { new(), new() };
-
+        var categories = new PagedList<CategoryDto>([new(), new()], 1, 1, 1);
+        var parameters = new CategoryParameters();
         _mediatorMock
-            .Setup(m => m.Send(new GetCategoriesQuery(), CancellationToken.None))
+            .Setup(m => m.Send(new GetCategoriesQuery(parameters), CancellationToken.None))
             .ReturnsAsync(categories);
 
         // Act
-        var result = await _controller.Get();
+        var result = await _controller.Get(parameters);
 
         // Assert
         result.Should().NotBeNull();
@@ -45,7 +46,7 @@ public class CategoryControllerTests
         value.Should().HaveCount(2);
         value.Should().BeEquivalentTo(categories);
 
-        _mediatorMock.Verify(m => m.Send(new GetCategoriesQuery(), CancellationToken.None), Times.Once);
+        _mediatorMock.Verify(m => m.Send(new GetCategoriesQuery(parameters), CancellationToken.None), Times.Once);
     }
 
     [Fact]

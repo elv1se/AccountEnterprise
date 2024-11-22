@@ -5,9 +5,10 @@ using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using AccountEnterprise.Domain.RequestFeatures;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 
-namespace AccountEnterprise.Web.Controllers;
+namespace AccountEnterprise.WebMVC.Controllers;
 
 public class TransactionsController : Controller
 {
@@ -20,11 +21,12 @@ public class TransactionsController : Controller
 
     [HttpGet]
     [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] TransactionParameters parameters)
     {
-        var transactions = await _mediator.Send(new GetTransactionsQuery());
-
-        return View(transactions);
+        var pagedResult = await _mediator.Send(new GetTransactionsQuery(parameters));
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.MetaData));
+        ViewData["SearchType"] = parameters.SearchType;
+        return View(pagedResult);
     }
 
     [HttpGet]
@@ -44,7 +46,7 @@ public class TransactionsController : Controller
     [HttpGet]
     public async Task<IActionResult> Create([FromQuery] OperationParameters operationParameters)
     {
-        var departments = await _mediator.Send(new GetDepartmentsQuery());
+        var departments = await _mediator.Send(new GetDepartmentsQuery(new()));
 
         if (departments != null)
             ViewData["DepartmentId"] = new SelectList(departments, "DepartmentId", "Name");
@@ -88,7 +90,7 @@ public class TransactionsController : Controller
             DepartmentId = isEntityFound.DepartmentId,
         };
 
-        var departments = await _mediator.Send(new GetDepartmentsQuery());
+        var departments = await _mediator.Send(new GetDepartmentsQuery(new()));
 
         if (departments != null)
             ViewData["DepartmentId"] = new SelectList(departments, "DepartmentId", "Name");
