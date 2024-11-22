@@ -5,19 +5,11 @@ using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using AccountEnterprise.Domain.RequestFeatures;
-<<<<<<< HEAD
-using Microsoft.AspNetCore.Authorization;
-=======
 using System.Text.Json;
-<<<<<<< HEAD
->>>>>>> Добавление пагинации и поиска
-=======
 using Microsoft.AspNetCore.Authorization;
->>>>>>> Исправление ошибок
 
 namespace AccountEnterprise.Web.Controllers;
 
-[Authorize]
 public class TransactionsController : Controller
 {
     private readonly IMediator _mediator;
