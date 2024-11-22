@@ -3,6 +3,7 @@
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
+using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Web.Controllers;
 
@@ -18,9 +19,9 @@ public class TransactionController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] TransactionParameters parameters)
     {
-        var transactions = await _mediator.Send(new GetTransactionsQuery());
+        var transactions = await _mediator.Send(new GetTransactionsQuery(parameters));
 
         return Ok(transactions);
     }

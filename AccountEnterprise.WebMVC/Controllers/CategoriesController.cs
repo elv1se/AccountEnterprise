@@ -3,10 +3,10 @@
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
-using Microsoft.AspNetCore.Authorization;
+using AccountEnterprise.Domain.RequestFeatures;
+using System.Text.Json;
 
 namespace AccountEnterprise.Web.Controllers;
-[Authorize]
 public class CategoriesController : Controller
 {
     private readonly IMediator _mediator;
@@ -18,11 +18,12 @@ public class CategoriesController : Controller
 
     [HttpGet]
     [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] CategoryParameters parameters)
     {
-        var categories = await _mediator.Send(new GetCategoriesQuery());
-
-        return View(categories);
+        var pagedResult = await _mediator.Send(new GetCategoriesQuery(parameters));
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.MetaData));
+        ViewData["SearchName"] = parameters.SearchName;
+        return View(pagedResult);
     }
 
     [HttpGet]
@@ -46,7 +47,6 @@ public class CategoriesController : Controller
     }
 
     [HttpPost]
-    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Create([FromForm] CategoryForCreationDto? department)
     {
         if (department is null)
@@ -77,7 +77,6 @@ public class CategoriesController : Controller
     }
 
     [HttpPost]
-    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Edit(Guid id, [FromForm] CategoryForUpdateDto? department)
     {
         if (department is null)
@@ -110,7 +109,6 @@ public class CategoriesController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteCategoryCommand(id));

@@ -7,6 +7,7 @@ using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using AccountEnterprise.Web.Controllers;
+using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Tests.ControllersTests;
 
@@ -25,14 +26,14 @@ public class DepartmentControllerTests
     public async Task Get_ReturnsListOfDepartments()
     {
         // Arrange
-        var departments = new List<DepartmentDto> { new(), new() };
-
+        var departments = new PagedList<DepartmentDto>([new(), new()], 1, 1, 1);
+        var parameters = new DepartmentParameters();
         _mediatorMock
-            .Setup(m => m.Send(new GetDepartmentsQuery(), CancellationToken.None))
+            .Setup(m => m.Send(new GetDepartmentsQuery(parameters), CancellationToken.None))
             .ReturnsAsync(departments);
 
         // Act
-        var result = await _controller.Get();
+        var result = await _controller.Get(parameters);
 
         // Assert
         result.Should().NotBeNull();
@@ -45,7 +46,7 @@ public class DepartmentControllerTests
         value.Should().HaveCount(2);
         value.Should().BeEquivalentTo(departments);
 
-        _mediatorMock.Verify(m => m.Send(new GetDepartmentsQuery(), CancellationToken.None), Times.Once);
+        _mediatorMock.Verify(m => m.Send(new GetDepartmentsQuery(parameters), CancellationToken.None), Times.Once);
     }
 
     [Fact]

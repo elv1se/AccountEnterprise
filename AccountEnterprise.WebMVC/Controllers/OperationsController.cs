@@ -5,7 +5,12 @@ using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Domain.RequestFeatures;
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Authorization;
+=======
+using System.ComponentModel.Design;
+using System.Text.Json;
+>>>>>>> Добавление пагинации и поиска
 
 namespace OperationEnterprise.Web.Controllers;
 
@@ -23,14 +28,17 @@ public class OperationsController : Controller
     [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<IActionResult> Index([FromQuery] OperationParameters operationParameters)
     {
+
         var operationTypes = await _mediator.Send(new GetOperationTypesQuery());
 
         if (operationTypes != null)
             ViewData["OperationTypeId"] = new SelectList(operationTypes, "OperationTypeId", "Name");
-
-        var operations = await _mediator.Send(new GetOperationsQuery(operationParameters));
-
-        return View(operations);
+        
+        var pagedResult = await _mediator.Send(new GetOperationsQuery(operationParameters));
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.MetaData));
+        ViewData["SearchType"] = operationParameters.SearchType;
+        ViewData["SearchMonth"] = operationParameters.SearchMonth;
+        return View(pagedResult);
     }
 
     [HttpGet]
@@ -50,7 +58,7 @@ public class OperationsController : Controller
     [HttpGet]
     public async Task<IActionResult> Create()
     {
-        var categories = await _mediator.Send(new GetCategoriesQuery());
+        var categories = await _mediator.Send(new GetCategoriesQuery(new()));
 
         if (categories != null)
             ViewData["CategoryId"] = new SelectList(categories, "CategoryId", "Name");
@@ -93,9 +101,9 @@ public class OperationsController : Controller
             CategoryId = isEntityFound.CategoryId,
             Name = isEntityFound.Name,
             OperationTypeId = isEntityFound.OperationTypeId,
-        };
+        };  
 
-        var categories = await _mediator.Send(new GetCategoriesQuery());
+        var categories = await _mediator.Send(new GetCategoriesQuery(new()));
 
         if (categories != null)
             ViewData["CategoryId"] = new SelectList(categories, "CategoryId", "Name");
