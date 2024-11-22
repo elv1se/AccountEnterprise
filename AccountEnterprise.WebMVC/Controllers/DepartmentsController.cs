@@ -3,16 +3,9 @@
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
-<<<<<<< HEAD
-using Microsoft.AspNetCore.Authorization;
-=======
 using AccountEnterprise.Domain.RequestFeatures;
 using System.Text.Json;
-<<<<<<< HEAD
->>>>>>> Добавление пагинации и поиска
-=======
 using Microsoft.AspNetCore.Authorization;
->>>>>>> Исправление ошибок
 
 namespace AccountEnterprise.Web.Controllers;
 

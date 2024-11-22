@@ -4,27 +4,20 @@ using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using Microsoft.AspNetCore.Mvc.Rendering;
-<<<<<<< HEAD
-using Microsoft.AspNetCore.Authorization;
-=======
 using AccountEnterprise.Domain.RequestFeatures;
 using System.Text.Json;
-<<<<<<< HEAD
->>>>>>> Добавление пагинации и поиска
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccountEnterprise.Web.Controllers;
 [Authorize]
 public class EmployeesController : Controller
-=======
-using Microsoft.AspNetCore.Authorization;
-
-namespace AccountEnterprise.Web.Controllers;
-
-[Authorize]
-public class EmployeesController(IMediator mediator) : Controller
->>>>>>> Исправление ошибок
 {
-    private readonly IMediator _mediator = mediator;
+    private readonly IMediator _mediator;
+
+    public EmployeesController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
 
     [HttpGet]
     [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]

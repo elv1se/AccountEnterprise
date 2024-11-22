@@ -8,7 +8,6 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AccountEnterprise.Web.Controllers;
-
 [Authorize]
 public class CategoriesController : Controller
 {
@@ -50,6 +49,7 @@ public class CategoriesController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Create([FromForm] CategoryForCreationDto? department)
     {
         if (department is null)
