@@ -25,7 +25,7 @@ public static class ServiceExtensions
     public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<AppDbContext>(opts =>
-            opts.UseSqlServer(configuration.GetConnectionString("DbConnection"), b =>
+            opts.UseSqlServer(configuration.GetConnectionString("LocalConnection"), b =>
                 b.MigrationsAssembly("AccountEnterprise.Infrastructure")));
     }
 

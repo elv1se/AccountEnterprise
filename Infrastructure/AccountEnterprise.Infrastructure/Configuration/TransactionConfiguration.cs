@@ -10,5 +10,6 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 	public void Configure(EntityTypeBuilder<Transaction> builder)
 	{
 		builder.Property(x => x.TransactionId).HasDefaultValueSql("NEWID()");
-	}
+		builder.HasOne(x => x.Department).WithMany(d => d.Transactions).OnDelete(DeleteBehavior.SetNull);
+    }
 }

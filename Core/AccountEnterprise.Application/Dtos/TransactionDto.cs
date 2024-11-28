@@ -6,7 +6,7 @@ public class TransactionDto
 	public string Type { get; set; }
 	public Guid OperationId { get; set; }
 	public OperationDto Operation { get; set; }
-	public Guid DepartmentId { get; set; }
-	public DepartmentDto Department { get; set; }
+	public Guid? DepartmentId { get; set; }
+	public DepartmentDto? Department { get; set; }
 }
 

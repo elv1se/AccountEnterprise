@@ -19,10 +19,10 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<User>(op
 	{
 		base.OnModelCreating(modelBuilder);
 
+		modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
 		modelBuilder.ApplyConfiguration(new TransactionConfiguration());
 		modelBuilder.ApplyConfiguration(new CategoryConfiguration());
 		modelBuilder.ApplyConfiguration(new OperationConfiguration());
-		modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
 		modelBuilder.ApplyConfiguration(new OperationTypeConfiguration());
 		modelBuilder.ApplyConfiguration(new AccountConfiguration());
 	}

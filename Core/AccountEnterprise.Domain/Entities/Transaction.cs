@@ -11,7 +11,7 @@ public class Transaction
 
 	public Guid OperationId { get; set; }
 
-	public Guid DepartmentId { get; set; }
+	public Guid? DepartmentId { get; set; }
 
 	public virtual Department Department { get; set; } = null!;
 
