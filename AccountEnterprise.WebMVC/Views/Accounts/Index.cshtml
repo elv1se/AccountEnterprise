@@ -22,10 +22,18 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Номер</th>
-            <th>Отдел</th>
-            <th>Название банка</th>
-            <th>Тип счета</th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchNumber = ViewData["SearchNumber"], orderby = "number" })">Номер</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchNumber = ViewData["SearchNumber"], orderby = "department" })">Отдел</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchNumber = ViewData["SearchNumber"], orderby = "bankName" })">Название банка</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchNumber = ViewData["SearchNumber"], orderby = "type" })">Тип счета</a>
+            </th>
             <th>Действия</th>
         </tr>
     </thead>

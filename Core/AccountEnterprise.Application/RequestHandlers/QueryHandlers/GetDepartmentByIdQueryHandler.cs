@@ -18,5 +18,5 @@ public class GetDepartmentByIdQueryHandler : IRequestHandler<GetDepartmentByIdQu
 	}
 
 	public async Task<DepartmentDto?> Handle(GetDepartmentByIdQuery request, CancellationToken cancellationToken) => 
-		_mapper.Map<DepartmentDto>(await _repository.GetById(request.Id, trackChanges: false));
+		_mapper.Map<DepartmentDto>(await _repository.GetById(request.Id, trackChanges: true));
 }

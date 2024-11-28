@@ -21,9 +21,15 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Тип</th>
-            <th>Операция</th>
-            <th>Департамент</th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["SearchType"], orderby = "type" })">Тип</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["SearchType"], orderby = "operation" })">Операция</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["SearchType"], orderby = "department" })">Департамент</a>
+            </th>
             <th>Actions</th>
         </tr>
     </thead>

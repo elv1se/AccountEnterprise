@@ -43,11 +43,21 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Название</th>
-            <th>Сумма</th>
-            <th>Дата</th>
-            <th>Категория</th>
-            <th>Тип операции</th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["searchType"], searchMonth = ViewData["searchMonth"], orderby = "name" })">Название</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["searchType"], searchMonth = ViewData["searchMonth"], orderby = "amount" })">Сумма</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["searchType"], searchMonth = ViewData["searchMonth"], orderby = "date" })">Дата</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["searchType"], searchMonth = ViewData["searchMonth"], orderby = "category" })">Категория</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["searchType"], searchMonth = ViewData["searchMonth"], orderby = "operationType" })">Тип операции</a>
+            </th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -57,7 +67,7 @@
             <tr>
                 <td>@operation.Name</td>
                 <td>@operation.Amount</td>
-                <td>@operation.Date.ToString("dd-MM-yyyy")</td> 
+                <td>@operation.Date.ToString("dd-MM-yyyy")</td>
                 <td>@operation.Category?.Name</td>
                 <td>@operation.OperationType?.Name</td>
                 <td>
