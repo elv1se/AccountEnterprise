@@ -14,7 +14,7 @@ public class AccountRepository(AppDbContext dbContext) : IAccountRepository
 
     public async Task<PagedList<Account>> Get(AccountParameters accountParameters, bool trackChanges)
     {
-        IQueryable<Account> query = _dbContext.Accounts.Include(e => e.Department);
+        IQueryable<Account> query = _dbContext.Accounts;
 
         if (!trackChanges)
             query = query.AsNoTracking();
@@ -41,8 +41,8 @@ public class AccountRepository(AppDbContext dbContext) : IAccountRepository
 
     public async Task<Account?> GetById(Guid id, bool trackChanges) =>
         await (!trackChanges ?
-            _dbContext.Accounts.Include(e => e.Department).AsNoTracking() :
-            _dbContext.Accounts.Include(e => e.Department)).SingleOrDefaultAsync(e => e.AccountId == id);
+            _dbContext.Accounts.AsNoTracking() :
+            _dbContext.Accounts).SingleOrDefaultAsync(e => e.AccountId == id);
 
     public void Delete(Account entity) => _dbContext.Accounts.Remove(entity);
 

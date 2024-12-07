@@ -9,6 +9,7 @@ namespace AccountEnterprise.Web.Controllers;
 
 [Route("api/categories")]
 [ApiController]
+[ApiExplorerSettings(GroupName = "v1")]
 public class CategoryController : ControllerBase
 {
     private readonly IMediator _mediator;

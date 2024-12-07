@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using AccountEnterprise.Infrastructure;
 using AccountEnterprise.Infrastructure.Repositories;
 using AccountEnterprise.Domain.Abstractions;
+using Microsoft.OpenApi.Models;
 
 namespace AccountEnterprise.Web.Extensions;
 
@@ -32,5 +33,25 @@ public static class ServiceExtensions
 		services.AddScoped<IOperationTypeRepository, OperationTypeRepository>();
 		services.AddScoped<IOperationRepository, OperationRepository>();
 		services.AddScoped<ITransactionRepository, TransactionRepository>();
+    }
+
+    public static void ConfigureSwagger(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(s =>
+        {
+            s.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "AccountEnterprise Web API",
+                Version = "v1",
+                Description = "AccountEnterprise Web API by Elv1se",
+                TermsOfService = new Uri("https://github.com/elv1se/AccountEnterprise"),
+                Contact = new OpenApiContact
+                {
+                    Name = "Elv1se",
+                    Email = "jeka.elvis.2004@gmail.com",
+                    Url = new Uri("https://t.me/torpebao"),
+                },
+            });
+        });
     }
 }

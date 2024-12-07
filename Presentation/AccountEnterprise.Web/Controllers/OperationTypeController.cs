@@ -8,6 +8,7 @@ namespace AccountEnterprise.Web.Controllers;
 
 [Route("api/operationTypes")]
 [ApiController]
+[ApiExplorerSettings(GroupName = "v1")]
 public class OperationTypeController : ControllerBase
 {
     private readonly IMediator _mediator;

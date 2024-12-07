@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список аккаунтов</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <h2>Список аккаунтов</h2>
+    <form name="accountForm">
+        <input type="hidden" name="id" value="0" />
+        <div class="form-group col-md-5">
+            <label for="number">Номер:</label>
+            <input class="form-control" name="number" required />
+        </div>
+        <div class="form-group col-md-5">
+            <label for="bankName">Название банка:</label>
+            <input class="form-control" name="bankName" required />
+        </div>
+        <div class="form-group col-md-5">
+            <label for="type">Тип:</label>
+            <input class="form-control" name="type" required />
+        </div>
+        <div class="form-group col-md-5">
+            <label for="departmentId">Выберите отдел:</label>
+            <select class="form-control" name="departmentId" required>
+                <option value="">Выберите отдел</option>
+            </select>
+        </div>
+        <div class="panel-body">
+            <button type="submit" id="submit" class="btn btn-primary">Сохранить</button>
+            <a id="reset" class="btn btn-secondary">Сбросить</a>
+        </div>
+    </form>
+
+    <div class="form-group col-md-5">
+        <label for="filter">Фильтровать по номеру:</label>
+        <input class="form-control" id="filter" placeholder="Введите номер" />
+    </div>
+
+    <table class="table table-condensed table-striped col-md-6">
+        <thead>
+            <tr><th>Id</th><th>Номер</th><th>Название банка</th><th>Тип</th><th>Отдел</th><th></th></tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div class="pagination-container">
+        <button id="prevPage" class="btn btn-secondary">Предыдущая</button>
+        <button id="nextPage" class="btn btn-secondary">Следующая</button>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const pageSize = 8;
+
+        document.getElementById("filter").addEventListener("input", () => {
+            currentPage = 1;
+            GetAccounts();
+        });
+
+        async function GetDepartments() {
+            const response = await fetch("https://localhost:7065/api/departments?pageSize=500", {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok) {
+                const departments = await response.json();
+                const select = document.querySelector("select[name='departmentId']");
+                departments.forEach(department => {
+                    const option = document.createElement("option");
+                    option.value = department.departmentId;
+                    option.textContent = department.name;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        async function GetAccounts() {
+            const filterValue = document.getElementById("filter").value;
+            const response = await fetch(`/api/accounts?pageNumber=${currentPage}&pageSize=${pageSize}&searchNumber=${filterValue}`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok) {
+                const accounts = await response.json();
+                renderAccounts(accounts);
+            }
+        }
+
+        function renderAccounts(accounts) {
+            let rows = document.querySelector("tbody");
+            rows.innerHTML = "";
+            accounts.forEach(account => {
+                rows.append(row(account));
+            });
+        }
+
+        async function CreateAccount(accountNumber, accountBankName, accountType, departmentId) {
+            const response = await fetch("/api/accounts", {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    number: accountNumber,
+                    bankName: accountBankName,
+                    type: accountType,
+                    departmentId: departmentId
+                })
+            });
+            if (response.ok) {
+                await GetAccounts();
+            }
+        }
+
+        async function EditAccount(accountId, accountNumber, accountBankName, accountType, departmentId) {
+            const response = await fetch("/api/accounts/" + accountId, {
+                method: "PUT",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: accountId,
+                    number: accountNumber,
+                    bankName: accountBankName,
+                    type: accountType,
+                    departmentId: departmentId
+                })
+            });
+            if (response.ok) {
+                await GetAccounts();
+            }
+        }
+
+        async function DeleteAccount(id) {
+            const response = await fetch("/api/accounts/" + id, {
+                method: "DELETE",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok) {
+                await GetAccounts();
+            }
+        }
+
+        function reset() {
+            const form = document.forms["accountForm"];
+            form.reset();
+            form.elements["id"].value = 0;
+            const select = document.querySelector("select[name='departmentId']");
+            select.selectedIndex = 0;
+        }
+
+        function row(account) {
+            const tr = document.createElement("tr");
+            tr.setAttribute("data-rowid", account.id);
+
+            const idTd = document.createElement("td");
+            idTd.append(account.id);
+            tr.append(idTd);
+
+            const numberTd = document.createElement("td");
+            numberTd.append(account.number);
+            tr.append(numberTd);
+
+            const bankNameTd = document.createElement("td");
+            bankNameTd.append(account.bankName);
+            tr.append(bankNameTd);
+
+            const typeTd = document.createElement("td");
+            typeTd.append(account.type);
+            tr.append(typeTd);
+
+            const departmentTd = document.createElement("td");
+            departmentTd.append(account.departmentId);
+            tr.append(departmentTd);
+
+            const linksTd = document.createElement("td");
+
+            const editLink = document.createElement("a");
+            editLink.setAttribute("data-id", account.id);
+            editLink.setAttribute("style", "cursor:pointer;padding:15px;");
+            editLink.append("Изменить");
+            editLink.addEventListener("click", e => {
+                e.preventDefault();
+                GetAccount(account.id);
+            });
+            linksTd.append(editLink);
+
+            const removeLink = document.createElement("a");
+            removeLink.setAttribute("data-id", account.id);
+            removeLink.setAttribute("style", "cursor:pointer;padding:15px;");
+            removeLink.append("Удалить");
+            removeLink.addEventListener("click", e => {
+                e.preventDefault();
+                DeleteAccount(account.id);
+            });
+
+            linksTd.append(removeLink);
+            tr.appendChild(linksTd);
+
+            return tr;
+        }
+
+        async function GetAccount(id) {
+            const response = await fetch("/api/accounts/" + id, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok) {
+                const account = await response.json();
+                const form = document.forms["accountForm"];
+                form.elements["id"].value = account.id;
+                form.elements["number"].value = account.number;
+                form.elements["bankName"].value = account.bankName;
+                form.elements["type"].value = account.type;
+                form.elements["departmentId"].value = account.departmentId;
+            }
+        }
+
+        document.getElementById("reset").addEventListener("click", function (e) {
+            e.preventDefault();
+            reset();
+        });
+
+        document.forms["accountForm"].addEventListener("submit", e => {
+            e.preventDefault();
+            const form = document.forms["accountForm"];
+            const id = form.elements["id"].value;
+            const number = form.elements["number"].value;
+            const bankName = form.elements["bankName"].value;
+            const type = form.elements["type"].value;
+            const departmentId = form.elements["departmentId"].value;
+            if (id == 0)
+                CreateAccount(number, bankName, type, departmentId);
+            else
+                EditAccount(id, number, bankName, type, departmentId);
+        });
+
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                GetAccounts();
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", () => {
+            currentPage++;
+            GetAccounts();
+        });
+
+        GetDepartments();
+        GetAccounts();
+    </script>
+</body>
+</html>

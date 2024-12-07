@@ -9,6 +9,7 @@ namespace AccountEnterprise.Web.Controllers;
 
 [Route("api/employees")]
 [ApiController]
+[ApiExplorerSettings(GroupName = "v1")]
 public class EmployeeController : ControllerBase
 {
     private readonly IMediator _mediator;

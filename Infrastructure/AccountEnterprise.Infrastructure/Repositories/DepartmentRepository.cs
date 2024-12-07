@@ -39,8 +39,8 @@ public class DepartmentRepository(AppDbContext dbContext) : IDepartmentRepositor
 
     public async Task<Department?> GetById(Guid id, bool trackChanges) =>
         await (!trackChanges ?
-            _dbContext.Departments.Include(x => x.Employees).Include(x => x.Transactions).AsNoTracking() :
-            _dbContext.Departments.Include(x => x.Employees).Include(x => x.Transactions).ThenInclude(x => x.Operation.OperationType)).SingleOrDefaultAsync(e => e.DepartmentId == id);
+            _dbContext.Departments.AsNoTracking() :
+            _dbContext.Departments).SingleOrDefaultAsync(e => e.DepartmentId == id);
 
     public void Delete(Department entity) => _dbContext.Departments.Remove(entity);
 

@@ -9,6 +9,7 @@ namespace AccountEnterprise.Web.Controllers;
 
 [Route("api/transactions")]
 [ApiController]
+[ApiExplorerSettings(GroupName = "v1")]
 public class TransactionController : ControllerBase
 {
     private readonly IMediator _mediator;

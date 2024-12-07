@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<title>Список категорий</title>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+	<h2>Список категорий</h2>
+	<form name="categoryForm">
+		<input type="hidden" name="id" value="0" />
+		<div class="form-group col-md-5">
+			<label for="name">Название категории:</label>
+			<input class="form-control" name="name" required />
+		</div>
+		<div class="form-group col-md-5">
+			<label for="description">Описание:</label>
+			<textarea class="form-control" name="description" required></textarea>
+		</div>
+		<div class="panel-body">
+			<button type="submit" id="submit" class="btn btn-primary">Сохранить</button>
+			<a id="reset" class="btn btn-secondary">Сбросить</a>
+		</div>
+	</form>
+
+	<div class="form-group col-md-5">
+		<label for="filter">Фильтровать по названию:</label>
+		<input class="form-control" id="filter" placeholder="Введите название" />
+	</div>
+
+	<table class="table table-condensed table-striped col-md-6">
+		<thead>
+			<tr><th>Id</th><th>Название категории</th><th>Описание</th><th></th></tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+
+	<div class="pagination-container">
+		<button id="prevPage" class="btn btn-secondary">Предыдущая</button>
+		<button id="nextPage" class="btn btn-secondary">Следующая</button>
+	</div>
+
+	<div>2019 © Metanit.com</div>
+
+	<script>
+		let currentPage = 1;
+		const pageSize = 8;
+
+		document.getElementById("filter").addEventListener("input", () => {
+			currentPage = 1;
+			GetCategories();
+		});
+
+		async function GetCategories() {
+			const filterValue = document.getElementById("filter").value;
+			const response = await fetch(`/api/categories?pageNumber=${currentPage}&pageSize=${pageSize}&searchName=${filterValue}`, {
+				method: "GET",
+				headers: { "Accept": "application/json" }
+			});
+			if (response.ok) {
+				const categories = await response.json();
+				renderCategories(categories);
+			}
+		}
+
+		function renderCategories(categories) {
+			let rows = document.querySelector("tbody");
+			rows.innerHTML = "";
+			categories.forEach(category => {
+				rows.append(row(category));
+			});
+		}
+
+		async function CreateCategory(name, description) {
+			const response = await fetch("/api/categories", {
+				method: "POST",
+				headers: { "Accept": "application/json", "Content-Type": "application/json" },
+				body: JSON.stringify({ name: name, description: description })
+			});
+			if (response.ok) {
+				await GetCategories();
+			}
+		}
+
+		async function EditCategory(categoryId, name, description) {
+			const response = await fetch(`/api/categories/${categoryId}`, {
+				method: "PUT",
+				headers: { "Accept": "application/json", "Content-Type": "application/json" },
+				body: JSON.stringify({ id: categoryId, name: name, description: description })
+			});
+			if (response.ok) {
+				await GetCategories();
+			}
+		}
+
+		async function DeleteCategory(id) {
+			const response = await fetch(`/api/categories/${id}`, {
+				method: "DELETE",
+				headers: { "Accept": "application/json" }
+			});
+			if (response.ok) {
+				await GetCategories();
+			}
+		}
+
+		function reset() {
+			const form = document.forms["categoryForm"];
+			form.reset();
+			form.elements["id"].value = 0;
+		}
+
+		function row(category) {
+			const tr = document.createElement("tr");
+			tr.setAttribute("data-rowid", category.categoryId);
+
+			const idTd = document.createElement("td");
+			idTd.append(category.categoryId);
+			tr.append(idTd);
+
+			const nameTd = document.createElement("td");
+			nameTd.append(category.name);
+			tr.append(nameTd);
+
+			const descriptionTd = document.createElement("td");
+			descriptionTd.append(category.description);
+			tr.append(descriptionTd);
+
+			const linksTd = document.createElement("td");
+
+			const editLink = document.createElement("a");
+			editLink.setAttribute("data-id", category.categoryId);
+			editLink.setAttribute("style", "cursor:pointer;padding:15px;");
+			editLink.append("Изменить");
+			editLink.addEventListener("click", e => {
+				e.preventDefault();
+				GetCategory(category.categoryId);
+			});
+			linksTd.append(editLink);
+
+			const removeLink = document.createElement("a");
+			removeLink.setAttribute("data-id", category.categoryId);
+			removeLink.setAttribute("style", "cursor:pointer;padding:15px;");
+			removeLink.append("Удалить");
+			removeLink.addEventListener("click", e => {
+				e.preventDefault();
+				DeleteCategory(category.categoryId);
+			});
+
+			linksTd.append(removeLink);
+			tr.appendChild(linksTd);
+
+			return tr;
+		}
+
+		async function GetCategory(id) {
+			const response = await fetch(`/api/categories/${id}`, {
+				method: "GET",
+				headers: { "Accept": "application/json" }
+			});
+			if (response.ok) {
+				const category = await response.json();
+				const form = document.forms["categoryForm"];
+				form.elements["id"].value = category.categoryId;
+				form.elements["name"].value = category.name;
+				form.elements["description"].value = category.description;
+			}
+		}
+
+		document.getElementById("reset").addEventListener("click", function (e) {
+			e.preventDefault();
+			reset();
+		});
+
+		document.forms["categoryForm"].addEventListener("submit", e => {
+			e.preventDefault();
+			const form = document.forms["categoryForm"];
+			const id = form.elements["id"].value;
+			const name = form.elements["name"].value;
+			const description = form.elements["description"].value;
+			if (id == 0)
+				CreateCategory(name, description);
+			else
+				EditCategory(id, name, description);
+		});
+
+		document.getElementById("prevPage").addEventListener("click", () => {
+			if (currentPage > 1) {
+				currentPage--;
+				GetCategories();
+			}
+		});
+
+		document.getElementById("nextPage").addEventListener("click", () => {
+			currentPage++;
+			GetCategories();
+		});
+
+		GetCategories();
+	</script>
+</body>
+</html>
