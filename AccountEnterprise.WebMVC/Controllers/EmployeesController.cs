@@ -3,9 +3,13 @@
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using AccountEnterprise.Domain.RequestFeatures;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
-namespace AccountEnterprise.Web.Controllers;
-
+namespace AccountEnterprise.WebMVC.Controllers;
+[Authorize]
 public class EmployeesController : Controller
 {
     private readonly IMediator _mediator;
@@ -17,12 +21,14 @@ public class EmployeesController : Controller
 
     [HttpGet]
     [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] EmployeeParameters parameters)
     {
-        var employees = await _mediator.Send(new GetEmployeesQuery());
-
-        return View(employees);
+        var pagedResult = await _mediator.Send(new GetEmployeesQuery(parameters));
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.MetaData));
+        ViewData["SearchPosition"] = parameters.SearchPosition;
+        return View(pagedResult);
     }
+    
 
     [HttpGet]
     [ResponseCache(Duration = 294, Location = ResponseCacheLocation.Any, NoStore = false)]
@@ -38,8 +44,20 @@ public class EmployeesController : Controller
         return View(employee);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Create()
+    {
+        var departments = await _mediator.Send(new GetDepartmentsQuery(new()));
+
+        if (departments != null)
+            ViewData["DepartmentId"] = new SelectList(departments, "DepartmentId", "Name");
+
+        return View();
+    }
+
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] EmployeeForCreationDto? employee)
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> Create([FromForm] EmployeeForCreationDto? employee)
     {
         if (employee is null)
         {
@@ -48,11 +66,39 @@ public class EmployeesController : Controller
 
         await _mediator.Send(new CreateEmployeeCommand(employee));
 
-        return CreatedAtAction(nameof(Create), employee);
+        return RedirectToAction(nameof(Index));
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Edit(Guid id, [FromBody] EmployeeForUpdateDto? employee)
+    [HttpGet]
+    public async Task<IActionResult> Edit(Guid id)
+    {
+        var isEntityFound = await _mediator.Send(new GetEmployeeByIdQuery(id));
+        if (isEntityFound == null)
+        {
+            return NotFound();
+        }
+
+        var fullName = isEntityFound.FullName.Split(' ');
+        EmployeeForUpdateDto model = new()
+        {
+            Surname = fullName[0],
+            Name = fullName[1],
+            Midname = fullName[2],
+            DepartmentId = isEntityFound.DepartmentId,
+            Position = isEntityFound.Position,
+        };
+
+        var departments = await _mediator.Send(new GetDepartmentsQuery(new()));
+
+        if (departments != null)
+            ViewData["DepartmentId"] = new SelectList(departments, "DepartmentId", "Name");
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> Edit(Guid id, [FromForm] EmployeeForUpdateDto? employee)
     {
         if (employee is null)
         {
@@ -66,11 +112,26 @@ public class EmployeesController : Controller
             return NotFound($"Employee with id {id} is not found.");
         }
 
-        return NoContent();
+        return RedirectToAction(nameof(Index));
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Delete(Guid? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var achievement = await _mediator.Send(new GetEmployeeByIdQuery((Guid)id));
+
+        return View(achievement);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         var isEntityFound = await _mediator.Send(new DeleteEmployeeCommand(id));
 
@@ -79,6 +140,6 @@ public class EmployeesController : Controller
             return NotFound($"Employee with id {id} is not found.");
         }
 
-        return NoContent();
+        return RedirectToAction(nameof(Index));
     }
 }

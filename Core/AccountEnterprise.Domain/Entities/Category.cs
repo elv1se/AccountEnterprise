@@ -1,8 +1,11 @@
-﻿namespace AccountEnterprise.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 
-public partial class Category
+namespace AccountEnterprise.Domain.Entities;
+
+public class Category
 {
-	public Guid CategoryId { get; set; }
+    [Key]
+    public Guid CategoryId { get; set; }
 
 	public string Name { get; set; } = null!;
 

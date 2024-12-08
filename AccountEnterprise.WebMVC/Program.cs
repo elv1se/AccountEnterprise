@@ -22,9 +22,26 @@ namespace AccountEnterprise.WebMVC
             });
             builder.Services.ConfigureCors();
 			builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
             builder.Services.ConfigureDbContext(builder.Configuration);
             builder.Services.ConfigureServices();
-           // builder.Services.AddRazorPages();
+            builder.Services.AddAuthentication();
+            builder.Services.ConfigureIdentity();
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.Cookie.Name = ".PerformanceRatingSystem.Session";
+                options.IdleTimeout = TimeSpan.FromSeconds(3600);
+                options.Cookie.IsEssential = true;
+            });
+
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
             var mappingConfig = new MapperConfiguration(mc =>
             {
@@ -50,16 +67,20 @@ namespace AccountEnterprise.WebMVC
             app.UseResponseCaching();
             app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
+            app.UseCookiePolicy();
+            app.UseSession();
+            app.UseDbInitializer();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
+            app.MapRazorPages();
             app.Run();
 		}
 	}

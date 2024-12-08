@@ -3,6 +3,7 @@
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
+using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Web.Controllers;
 
@@ -18,9 +19,9 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] AccountParameters parameters)
     {
-        var accounts = await _mediator.Send(new GetAccountsQuery());
+        var accounts = await _mediator.Send(new GetAccountsQuery(parameters));
 
         return Ok(accounts);
     }

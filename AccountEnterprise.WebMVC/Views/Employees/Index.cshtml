@@ -1,19 +1,36 @@
-﻿@model IEnumerable<AccountEnterprise.Application.Dtos.EmployeeDto>
+﻿@model AccountEnterprise.Domain.RequestFeatures.PagedList<AccountEnterprise.Application.Dtos.EmployeeDto>
+
 @{
     Layout = "_Layout";
 }
 
 <h2>Сотрудники</h2>
+<form method="get">
+    <div class="form-row align-items-end">
+        <div class="col-auto">
+            <label for="searchPosition">Должность</label>
+            <input type="text" id="searchPosition" name="searchPosition" class="form-control" value="@ViewData["SearchPosition"]" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-secondary">Найти</button>
+        </div>
+    </div>
+</form>
 
-<a asp-controller="Employees" asp-action="Create">Создать нового сотрудника</a>
+<a class="btn btn-primary" asp-controller="Employees" asp-action="Create">Создать нового сотрудника</a>
+<br />
 <table class="table">
     <thead>
         <tr>
-            <th>Фамилия</th>
-            <th>Имя</th>
-            <th>Отчество</th>
-            <th>Должность</th>
-            <th>Департамент</th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchPosition = ViewData["SearchPosition"], orderby = "fullName" })">ФИО</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchPosition = ViewData["SearchPosition"], orderby = "position" })">Должность</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchPosition = ViewData["SearchPosition"], orderby = "department" })">Департамент</a>
+            </th>
             <th>Действия</th>
         </tr>
     </thead>
@@ -21,17 +38,61 @@
         @foreach (var employee in Model)
         {
             <tr>
-                <td>@employee.Surname</td>
-                <td>@employee.Name</td>
-                <td>@employee.Midname</td>
+                <td>@employee.FullName</td>
                 <td>@employee.Position</td>
-                <td>@employee.Department?.Name</td> 
+                <td>@employee.Department?.Name</td>
                 <td>
-                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">Детали</a> |
-                    <a asp-controller="Employees" asp-action="Delete" asp-route-id="@employee.Id">Удалить</a>
+                    <a class="btn btn-sm btn-primary" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">Подробнее</a> |
+                    <a class="btn btn-sm btn-danger" asp-controller="Employees" asp-action="Delete" asp-route-id="@employee.Id">Удалить</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+<div class="pagination">
+    @if (Model.MetaData.HasPrevious)
+    {
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@(Model.MetaData.CurrentPage - 1)" asp-route-searchPosition="@ViewData["SearchPosition"]">Назад</a>
+    }
+
+    @if (Model.MetaData.CurrentPage > 3)
+    {
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="1" asp-route-searchPosition="@ViewData["SearchPosition"]">1</a>
+        @if (Model.MetaData.CurrentPage > 4)
+        {
+            <span>...</span>
+        }
+    }
+
+    @{
+        var startPage = Math.Max(2, Model.MetaData.CurrentPage - 2);
+        var endPage = Math.Min(Model.MetaData.CurrentPage + 2, Model.MetaData.TotalPages - 1);
+    }
+
+    @for (int i = startPage; i <= endPage; i++)
+    {
+        if (i == Model.MetaData.CurrentPage)
+        {
+            <span class="btn btn-secondary disabled">@i</span>
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@i" asp-route-searchPosition="@ViewData["SearchPosition"]">@i</a>
+        }
+    }
+
+    @if (Model.MetaData.CurrentPage < Model.MetaData.TotalPages - 2)
+    {
+        @if (Model.MetaData.CurrentPage < Model.MetaData.TotalPages - 3)
+        {
+            <span>...</span>
+        }
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@Model.MetaData.TotalPages" asp-route-searchPosition="@ViewData["SearchPosition"]">@Model.MetaData.TotalPages</a>
+    }
+
+    @if (Model.MetaData.HasNext)
+    {
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@(Model.MetaData.CurrentPage + 1)" asp-route-searchPosition="@ViewData["SearchPosition"]">Вперед</a>
+    }
+</div>

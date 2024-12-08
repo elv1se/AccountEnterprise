@@ -1,0 +1,52 @@
+﻿@model AccountEnterprise.Application.Dtos.OperationDto
+
+@{
+    ViewData["Title"] = "Удаление операции";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Удаление операции</h2>
+
+<h3>Вы уверены, что хотите удалить следующую операцию?</h3>
+<div>
+    <h4>Операция</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Название
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            Сумма
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Amount)
+        </dd>
+        <dt>
+            Дата
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt>
+            Категория
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Category.Name)
+        </dd>
+        <dt>
+            Тип операции
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OperationType.Name)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="OperationId" />
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a class="btn btn-sm btn-primary" asp-controller="Operations" asp-action="Index">Вернуться к списку</a>
+    </form>
+</div>

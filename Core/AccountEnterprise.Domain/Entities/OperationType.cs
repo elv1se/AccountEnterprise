@@ -1,8 +1,11 @@
-﻿namespace AccountEnterprise.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 
-public partial class OperationType
+namespace AccountEnterprise.Domain.Entities;
+
+public class OperationType
 {
-	public Guid OperationTypeId { get; set; }
+    [Key]
+    public Guid OperationTypeId { get; set; }
 
 	public string Name { get; set; } = null!;
 

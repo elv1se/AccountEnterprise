@@ -1,0 +1,28 @@
+﻿@model AccountEnterprise.Application.Dtos.CategoryDto
+
+@{
+    ViewData["Title"] = "Удаление категории";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Удаление категории</h2>
+
+<h3>Вы уверены, что хотите удалить следующую категорию?</h3>
+<div>
+    <h4>Категория</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="CategoryId" />
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a class="btn btn-sm btn-primary" asp-controller="Categories" asp-action="Index" class="btn btn-default">Вернуться к списку</a>
+    </form>
+</div>

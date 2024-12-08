@@ -3,19 +3,36 @@
     Layout = "_Layout";
 }
 
-<h2>Детали департамента</h2>
+<h2>Отдел @Model.Name</h2>
 
 <div>
-    <h4>Департамент</h4>
+    <h4>Отдел</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">ID</dt>
-        <dd class="col-sm-10">@Model.Id</dd>
+        <dd class="col-sm-10">@Model.DepartmentId</dd>
 
         <dt class="col-sm-2">Название</dt>
         <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">Сотрудники</dt>
+        <ul class="list-group list-group-flush">
+        @foreach (var employee in Model.Employees)
+        {
+                <li class="list-group-item">[@employee.Position] @employee.FullName</li>
+        }
+        </ul>
+
+        <dt class="col-sm-2">Транзакции</dt>
+        <ul class="list-group list-group-flush">
+            @foreach (var trans in Model.Transactions)
+            {
+                <li class="list-group-item">[@trans.Operation.OperationType.Name - @trans.Operation.Date] @trans.Operation.Name: @trans.Operation.Amount руб.</li>
+            }
+        </ul>
+
     </dl>
 </div>
-
-<a asp-controller="Departments" asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a> |
-<a asp-controller="Departments" asp-action="Index">Назад к списку</a>
+<br/>
+<a class="btn btn-sm btn-primary" asp-controller="Departments" asp-action="Edit" asp-route-id="@Model.DepartmentId">Редактировать</a> |
+<a class="btn btn-sm btn-primary" asp-controller="Departments" asp-action="Index">Назад к списку</a>

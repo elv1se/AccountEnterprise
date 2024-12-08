@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AccountEnterprise.Domain.Entities;
 using AccountEnterprise.Application.Dtos;
+using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Application;
 
@@ -8,18 +9,21 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-		CreateMap<Department, DepartmentDto>()
-            .ForMember(x => x.Id, opt => opt.MapFrom(a => a.DepartmentId));
+        CreateMap<Department, DepartmentDto>();
         CreateMap<DepartmentForCreationDto, Department>();
 		CreateMap<DepartmentForUpdateDto, Department>();
 
 		CreateMap<Employee, EmployeeDto>()
-             .ForMember(x => x.Id, opt => opt.MapFrom(a => a.EmployeeId));
+             .ForMember(x => x.Id, opt => 
+                opt.MapFrom(a => a.EmployeeId))
+             .ForMember(e => e.FullName, opt => 
+                opt.MapFrom(x => 
+                    string.Join(' ', x.Surname, x.Name, x.Midname)));
+
         CreateMap<EmployeeForCreationDto, Employee>();
 		CreateMap<EmployeeForUpdateDto, Employee>();
 
-		CreateMap<Category, CategoryDto>()
-             .ForMember(x => x.Id, opt => opt.MapFrom(a => a.CategoryId));
+        CreateMap<Category, CategoryDto>();
         CreateMap<CategoryForCreationDto, Category>();
 		CreateMap<CategoryForUpdateDto, Category>();
 
@@ -28,13 +32,11 @@ public class MappingProfile : Profile
         CreateMap<AccountForCreationDto, Account>();
 		CreateMap<AccountForUpdateDto, Account>();
 
-		CreateMap<OperationType, OperationTypeDto>()
-              .ForMember(x => x.Id, opt => opt.MapFrom(a => a.OperationTypeId));
+        CreateMap<OperationType, OperationTypeDto>();
         CreateMap<OperationTypeForCreationDto, OperationType>();
 		CreateMap<OperationTypeForUpdateDto, OperationType>();
 
-		CreateMap<Operation, OperationDto>()
-             .ForMember(x => x.Id, opt => opt.MapFrom(a => a.OperationId));
+        CreateMap<Operation, OperationDto>();
         CreateMap<OperationForCreationDto, Operation>();
 		CreateMap<OperationForUpdateDto, Operation>();
 
@@ -42,6 +44,10 @@ public class MappingProfile : Profile
             .ForMember(x => x.Id, opt => opt.MapFrom(a => a.TransactionId));
         CreateMap<TransactionForCreationDto, Transaction>();
 		CreateMap<TransactionForUpdateDto, Transaction>();
+
+        CreateMap<User, UserDto>();
+        CreateMap<UserForCreationDto, User>();
+        CreateMap<UserForUpdateDto, User>();
     }
 }
 

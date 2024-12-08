@@ -1,20 +1,63 @@
-﻿@model IEnumerable<AccountEnterprise.Application.Dtos.OperationDto>
+﻿@model AccountEnterprise.Domain.RequestFeatures.PagedList<AccountEnterprise.Application.Dtos.OperationDto>
 
 @{
     Layout = "_Layout";
 }
 
 <h2>Операции</h2>
-
-<a asp-controller="Operations" asp-action="Create">Создать новую операцию</a>
+<form method="get">
+    <div class="form-row align-items-end">
+        <div class="col-auto">
+            <label for="searchMonth">Месяц</label>
+            <select id="searchMonth" name="searchMonth" class="form-control">
+                <option value="">-- Выберите месяц --</option>
+                <option value="1">январь</option>
+                <option value="2">февраль</option>
+                <option value="3">март</option>
+                <option value="4">апрель</option>
+                <option value="5">май</option>
+                <option value="6">июнь</option>
+                <option value="7">июль</option>
+                <option value="8">август</option>
+                <option value="9">сентябрь</option>
+                <option value="10">октябрь</option>
+                <option value="11">ноябрь</option>
+                <option value="12">декабрь</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <label for="searchType">Отдел</label>
+            <select id="searchType" name="searchType" class="form-control" asp-items="ViewBag.OperationTypeId">
+                <option value="">-- Выберите тип операции --</option>
+            </select>
+        </div>
+        <br />
+        <div class="col-auto">
+            <button type="submit" class="btn btn-secondary">Найти</button>
+        </div>
+    </div>
+</form>
+<br />
+<a class="btn btn-primary" asp-controller="Operations" asp-action="Create">Создать новую операцию</a>
+<br />
 <table class="table">
     <thead>
         <tr>
-            <th>Название</th>
-            <th>Сумма</th>
-            <th>Дата</th>
-            <th>Категория</th>
-            <th>Тип операции</th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["searchType"], searchMonth = ViewData["searchMonth"], orderby = "name" })">Название</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["searchType"], searchMonth = ViewData["searchMonth"], orderby = "amount" })">Сумма</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["searchType"], searchMonth = ViewData["searchMonth"], orderby = "date" })">Дата</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["searchType"], searchMonth = ViewData["searchMonth"], orderby = "category" })">Категория</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["searchType"], searchMonth = ViewData["searchMonth"], orderby = "operationType" })">Тип операции</a>
+            </th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -24,14 +67,60 @@
             <tr>
                 <td>@operation.Name</td>
                 <td>@operation.Amount</td>
-                <td>@operation.Date.ToString("dd-MM-yyyy")</td> <!-- Форматирование даты -->
-                <td>@operation.Category?.Name</td> <!-- Отображаем имя категории -->
-                <td>@operation.OperationType?.Name</td> <!-- Отображаем имя типа операции -->
+                <td>@operation.Date.ToString("dd-MM-yyyy")</td>
+                <td>@operation.Category?.Name</td>
+                <td>@operation.OperationType?.Name</td>
                 <td>
-                    <a asp-controller="Operations" asp-action="Details" asp-route-id="@operation.Id">Детали</a> |
-                    <a asp-controller="Operations" asp-action="Delete" asp-route-id="@operation.Id">Удалить</a>
+                    <a class="btn btn-sm btn-primary" asp-controller="Operations" asp-action="Details" asp-route-id="@operation.OperationId">Подробнее</a> |
+                    <a class="btn btn-sm btn-danger" asp-controller="Operations" asp-action="Delete" asp-route-id="@operation.OperationId">Удалить</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<div class="pagination">
+    @if (Model.MetaData.HasPrevious)
+    {
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@(Model.MetaData.CurrentPage - 1)" asp-route-searchType="@ViewData["searchType"]" asp-route-searchMonth="@ViewData["searchMonth"]">Назад</a>
+    }
+
+    @if (Model.MetaData.CurrentPage > 3)
+    {
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="1" asp-route-searchType="@ViewData["searchType"]" asp-route-searchMonth="@ViewData["searchMonth"]">1</a>
+        @if (Model.MetaData.CurrentPage > 4)
+        {
+            <span>...</span>
+        }
+    }
+
+    @{
+        var startPage = Math.Max(2, Model.MetaData.CurrentPage - 2);
+        var endPage = Math.Min(Model.MetaData.CurrentPage + 2, Model.MetaData.TotalPages - 1);
+    }
+
+    @for (int i = startPage; i <= endPage; i++)
+    {
+        if (i == Model.MetaData.CurrentPage)
+        {
+            <span class="btn btn-secondary disabled">@i</span>
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@i" asp-route-searchType="@ViewData["searchType"]" asp-route-searchMonth="@ViewData["searchMonth"]">@i</a>
+        }
+    }
+
+    @if (Model.MetaData.CurrentPage < Model.MetaData.TotalPages - 2)
+    {
+        @if (Model.MetaData.CurrentPage < Model.MetaData.TotalPages - 3)
+        {
+            <span>...</span>
+        }
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@Model.MetaData.TotalPages" asp-route-searchType="@ViewData["searchType"]" asp-route-searchMonth="@ViewData["searchMonth"]">@Model.MetaData.TotalPages</a>
+    }
+
+    @if (Model.MetaData.HasNext)
+    {
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@(Model.MetaData.CurrentPage + 1)" asp-route-searchType="@ViewData["searchType"]" asp-route-searchMonth="@ViewData["searchMonth"]">Вперед</a>
+    }
+</div>

@@ -7,6 +7,7 @@ using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using AccountEnterprise.Web.Controllers;
+using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Tests.ControllersTests;
 
@@ -25,14 +26,14 @@ public class TransactionControllerTests
     public async Task Get_ReturnsListOfTransactions()
     {
         // Arrange
-        var transactions = new List<TransactionDto> { new(), new() };
-
+        var transactions = new PagedList<TransactionDto>([new(), new()], 1, 1, 1);
+        var parameters = new TransactionParameters();
         _mediatorMock
-            .Setup(m => m.Send(new GetTransactionsQuery(), CancellationToken.None))
+            .Setup(m => m.Send(new GetTransactionsQuery(parameters), CancellationToken.None))
             .ReturnsAsync(transactions);
 
         // Act
-        var result = await _controller.Get();
+        var result = await _controller.Get(parameters);
 
         // Assert
         result.Should().NotBeNull();
@@ -45,7 +46,7 @@ public class TransactionControllerTests
         value.Should().HaveCount(2);
         value.Should().BeEquivalentTo(transactions);
 
-        _mediatorMock.Verify(m => m.Send(new GetTransactionsQuery(), CancellationToken.None), Times.Once);
+        _mediatorMock.Verify(m => m.Send(new GetTransactionsQuery(parameters), CancellationToken.None), Times.Once);
     }
 
     [Fact]

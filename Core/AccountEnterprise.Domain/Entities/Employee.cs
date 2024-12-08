@@ -1,8 +1,11 @@
-﻿namespace AccountEnterprise.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
 
-public partial class Employee
+namespace AccountEnterprise.Domain.Entities;
+
+public class Employee
 {
-	public Guid EmployeeId { get; set; }
+    [Key]
+    public Guid EmployeeId { get; set; }
 
 	public string Surname { get; set; } = null!;
 

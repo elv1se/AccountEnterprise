@@ -4,8 +4,8 @@
 }
 
 <h2>Список типов операций</h2>
-<a asp-controller="OperationTypes" asp-action="Create">Создать новый тип операции</a>
-
+<a class="btn btn-primary" asp-controller="OperationTypes" asp-action="Create">Создать новый тип операции</a>
+<br/>
 <table class="table">
     <thead>
         <tr>
@@ -19,9 +19,9 @@
             <tr>
                 <td>@type.Name</td>
                 <td>
-                    <a asp-controller="OperationTypes" asp-action="Details" asp-route-id="@type.Id">Детали</a> |
-                    <a asp-controller="OperationTypes" asp-action="Delete" asp-route-id="@type.Id">Удалить</a>
-                </td>
+                    <a class="btn btn-sm btn-primary" asp-controller="OperationTypes" asp-action="Details" asp-route-id="@type.OperationTypeId">Подробнее</a> |
+                    <a class="btn btn-sm btn-danger" asp-controller="OperationTypes" asp-action="Delete" asp-route-id="@type.OperationTypeId">Удалить</a>
+                </td> 
             </tr>
         }
     </tbody>

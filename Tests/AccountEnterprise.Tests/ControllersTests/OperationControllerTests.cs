@@ -7,6 +7,7 @@ using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
 using AccountEnterprise.Web.Controllers;
+using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Tests.ControllersTests;
 
@@ -25,14 +26,16 @@ public class OperationControllerTests
     public async Task Get_ReturnsListOfOperations()
     {
         // Arrange
-        var operations = new List<OperationDto> { new(), new() };
+        var operations = new PagedList<OperationDto>([new(), new()], 2, 1, 5);
+
+        var parameters = new OperationParameters();
 
         _mediatorMock
-            .Setup(m => m.Send(new GetOperationsQuery(), CancellationToken.None))
+            .Setup(m => m.Send(new GetOperationsQuery(parameters), CancellationToken.None))
             .ReturnsAsync(operations);
 
         // Act
-        var result = await _controller.Get();
+        var result = await _controller.Get(parameters);
 
         // Assert
         result.Should().NotBeNull();
@@ -45,7 +48,7 @@ public class OperationControllerTests
         value.Should().HaveCount(2);
         value.Should().BeEquivalentTo(operations);
 
-        _mediatorMock.Verify(m => m.Send(new GetOperationsQuery(), CancellationToken.None), Times.Once);
+        _mediatorMock.Verify(m => m.Send(new GetOperationsQuery(parameters), CancellationToken.None), Times.Once);
     }
 
     [Fact]
@@ -53,7 +56,7 @@ public class OperationControllerTests
     {
         // Arrange
         var operationId = Guid.NewGuid();
-        var operation = new OperationDto { Id = operationId };
+        var operation = new OperationDto { OperationId = operationId };
 
         _mediatorMock
             .Setup(m => m.Send(new GetOperationByIdQuery(operationId), CancellationToken.None))
@@ -78,7 +81,7 @@ public class OperationControllerTests
     {
         // Arrange
         var operationId = Guid.NewGuid();
-        var operation = new OperationDto { Id = operationId };
+        var operation = new OperationDto { OperationId = operationId };
 
         _mediatorMock
             .Setup(m => m.Send(new GetOperationByIdQuery(operationId), CancellationToken.None))

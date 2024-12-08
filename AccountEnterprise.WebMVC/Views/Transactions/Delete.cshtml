@@ -1,0 +1,40 @@
+﻿@model AccountEnterprise.Application.Dtos.TransactionDto
+
+@{
+    ViewData["Title"] = "Удаление транзакции";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Удаление транзакции</h2>
+
+<h3>Вы уверены, что хотите удалить следующую транзакцию?</h3>
+<div>
+    <h4>Транзакция</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Тип
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt>
+            Операция
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Operation.Name) 
+        </dd>
+        <dt>
+            Отдел
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Department.Name)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a class="btn btn-sm btn-primary" asp-controller="Transactions" asp-action="Index">Вернуться к списку</a>
+    </form>
+</div>

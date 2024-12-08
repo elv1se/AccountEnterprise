@@ -1,18 +1,35 @@
-﻿@model IEnumerable<AccountEnterprise.Application.Dtos.TransactionDto>
+﻿@model AccountEnterprise.Domain.RequestFeatures.PagedList<AccountEnterprise.Application.Dtos.TransactionDto>
 
 @{
     Layout = "_Layout";
 }
 
 <h2>Транзакции</h2>
-
-<a asp-controller="Transactions" asp-action="Create">Создать новую транзакцию</a>
+<form method="get">
+    <div class="form-row align-items-end">
+        <div class="col-auto">
+            <label for="searchType">Тип</label>
+            <input type="text" id="searchType" name="searchType" class="form-control" value="@ViewData["SearchType"]" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-secondary">Найти</button>
+        </div>
+    </div>
+</form>
+<a class="btn btn-primary" asp-controller="Transactions" asp-action="Create">Создать новую транзакцию</a>
+<br />
 <table class="table">
     <thead>
         <tr>
-            <th>Тип</th>
-            <th>Операция</th>
-            <th>Департамент</th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["SearchType"], orderby = "type" })">Тип</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["SearchType"], orderby = "operation" })">Операция</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", new { pageNumber = Model.MetaData.CurrentPage, searchType = ViewData["SearchType"], orderby = "department" })">Департамент</a>
+            </th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -21,13 +38,60 @@
         {
             <tr>
                 <td>@transaction.Type</td>
-                <td>@transaction.Operation?.Name</td> 
+                <td>@transaction.Operation?.Name</td>
                 <td>@transaction.Department?.Name</td>
                 <td>
-                    <a asp-controller="Transactions" asp-action="Details" asp-route-id="@transaction.Id">Детали</a> |
-                    <a asp-controller="Transactions" asp-action="Delete" asp-route-id="@transaction.Id">Удалить</a>
+                    <a class="btn btn-sm btn-primary" asp-controller="Transactions" asp-action="Details" asp-route-id="@transaction.Id">Детали</a> |
+                    <a class="btn btn-sm btn-danger" asp-controller="Transactions" asp-action="Delete" asp-route-id="@transaction.Id">Удалить</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<div class="pagination">
+    @if (Model.MetaData.HasPrevious)
+    {
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@(Model.MetaData.CurrentPage - 1)" asp-route-searchType="@ViewData["SearchType"]">Назад</a>
+    }
+
+    @if (Model.MetaData.CurrentPage > 3)
+    {
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="1" asp-route-searchType="@ViewData["SearchType"]">1</a>
+        @if (Model.MetaData.CurrentPage > 4)
+        {
+            <span>...</span>
+        }
+    }
+
+    @{
+        var startPage = Math.Max(2, Model.MetaData.CurrentPage - 2);
+        var endPage = Math.Min(Model.MetaData.CurrentPage + 2, Model.MetaData.TotalPages - 1);
+    }
+
+    @for (int i = startPage; i <= endPage; i++)
+    {
+        if (i == Model.MetaData.CurrentPage)
+        {
+            <span class="btn btn-secondary disabled">@i</span>
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@i" asp-route-searchType="@ViewData["SearchType"]">@i</a>
+        }
+    }
+
+    @if (Model.MetaData.CurrentPage < Model.MetaData.TotalPages - 2)
+    {
+        @if (Model.MetaData.CurrentPage < Model.MetaData.TotalPages - 3)
+        {
+            <span>...</span>
+        }
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@Model.MetaData.TotalPages" asp-route-searchType="@ViewData["SearchType"]">@Model.MetaData.TotalPages</a>
+    }
+
+    @if (Model.MetaData.HasNext)
+    {
+        <a class="btn btn-primary" asp-action="Index" asp-route-PageNumber="@(Model.MetaData.CurrentPage + 1)" asp-route-searchType="@ViewData["SearchType"]">Вперед</a>
+    }
+</div>

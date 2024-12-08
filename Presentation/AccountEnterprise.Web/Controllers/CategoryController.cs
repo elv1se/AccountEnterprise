@@ -3,6 +3,7 @@
 using AccountEnterprise.Application.Dtos;
 using AccountEnterprise.Application.Requests.Queries;
 using AccountEnterprise.Application.Requests.Commands;
+using AccountEnterprise.Domain.RequestFeatures;
 
 namespace AccountEnterprise.Web.Controllers;
 
@@ -18,9 +19,9 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] CategoryParameters parameters)
     {
-        var categories = await _mediator.Send(new GetCategoriesQuery());
+        var categories = await _mediator.Send(new GetCategoriesQuery(parameters));
 
         return Ok(categories);
     }
